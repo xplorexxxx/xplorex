@@ -26,7 +26,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
           <div className="relative">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">Prêt à stopper les pertes ?</h2>
             <p className="text-lg text-primary-foreground/80 max-w-xl mx-auto mb-8">
-              Calculez vos économies potentielles en 30 secondes, ou réservez un appel gratuit pour discuter de vos
+              Calculez vos économies potentielles en 30 secondes, ou réservez un appel offert pour discuter de vos
               opportunités d'automatisation spécifiques.
             </p>
 
