@@ -24,51 +24,51 @@ const Hero = () => {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-secondary border border-border text-sm text-muted-foreground">
           <Sparkles className="w-4 h-4 text-accent" />
-          <span>Free ROI Assessment Tool</span>
+          <span>Outil gratuit d'évaluation du ROI</span>
         </div>
 
         {/* Headline */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">
-          Find the hidden hours and{" "}
-          <span className="gradient-text">€ leaking</span>{" "}
-          from your operations—instantly.
+          Identifiez les heures cachées et les{" "}
+          <span className="gradient-text">€ perdus</span>{" "}
+          dans vos opérations — instantanément.
         </h1>
 
         {/* Subheadline */}
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance">
-          Quantify the true cost of repetitive tasks. Discover where automation and AI can save your team thousands of hours and euros every year.
+          Quantifiez le vrai coût des tâches répétitives. Découvrez où l'automatisation et l'IA peuvent faire économiser des milliers d'heures et d'euros à votre équipe chaque année.
         </p>
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button onClick={scrollToCalculator} className="btn-primary text-base py-3.5 px-8">
-            Calculate My ROI
+            Calculer mon ROI
             <ArrowDown className="w-4 h-4" />
           </button>
           <p className="text-sm text-muted-foreground">
-            Simple inputs. Transparent math. Instant results.
+            Entrées simples. Calculs transparents. Résultats instantanés.
           </p>
         </div>
 
         {/* Trust indicators */}
         <div className="mt-16 pt-8 border-t border-border/50">
-          <p className="text-sm text-muted-foreground mb-4">Built for busy operators</p>
+          <p className="text-sm text-muted-foreground mb-4">Conçu pour les opérateurs occupés</p>
           <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-foreground/70">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              Support Teams
+              Équipes Support
             </span>
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              Operations
+              Opérations
             </span>
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              Sales
+              Ventes
             </span>
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              Admin
+              Administration
             </span>
           </div>
         </div>

@@ -3,23 +3,23 @@ import { Workflow, Bot, BookOpen, Brain, CheckCircle } from "lucide-react";
 const solutions = [
   {
     icon: Workflow,
-    title: "n8n Workflows",
-    description: "Connect your tools and automate multi-step processes without code.",
+    title: "Workflows n8n",
+    description: "Connectez vos outils et automatisez des processus multi-étapes sans code.",
   },
   {
     icon: Bot,
-    title: "LLM Chatbots",
-    description: "Deploy AI assistants to handle customer queries and internal questions 24/7.",
+    title: "Chatbots LLM",
+    description: "Déployez des assistants IA pour gérer les questions clients et internes 24h/24.",
   },
   {
     icon: BookOpen,
-    title: "RAG Knowledge Base",
-    description: "Give AI access to your docs so it can answer questions accurately.",
+    title: "Base de connaissances RAG",
+    description: "Donnez à l'IA accès à vos documents pour qu'elle réponde avec précision.",
   },
   {
     icon: Brain,
-    title: "AI Agents",
-    description: "Autonomous systems that can research, analyze, and execute tasks for you.",
+    title: "Agents IA",
+    description: "Systèmes autonomes capables de rechercher, analyser et exécuter des tâches pour vous.",
   },
 ];
 
@@ -29,10 +29,10 @@ const WhatYouCanAutomate = () => {
       <div className="container-narrow">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            What you can automate after this
+            Ce que vous pouvez automatiser ensuite
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Once you identify the leak, here's how modern automation and AI can plug it.
+            Une fois la perte identifiée, voici comment l'automatisation moderne et l'IA peuvent la combler.
           </p>
         </div>
 
@@ -66,14 +66,14 @@ const WhatYouCanAutomate = () => {
         {/* Benefits list */}
         <div className="mt-12 p-6 rounded-2xl bg-secondary/50 border border-border/50">
           <h3 className="font-semibold text-foreground mb-4">
-            Designed to help you spot automation and AI opportunities
+            Conçu pour vous aider à identifier les opportunités d'automatisation et d'IA
           </h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              "Reduce manual workload by 40-80%",
-              "Faster response times for customers",
-              "Free your team for high-value work",
-              "Scale operations without scaling headcount",
+              "Réduisez la charge de travail manuelle de 40 à 80%",
+              "Temps de réponse plus rapides pour les clients",
+              "Libérez votre équipe pour des tâches à haute valeur",
+              "Développez les opérations sans augmenter les effectifs",
             ].map((benefit, index) => (
               <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle className="w-4 h-4 text-accent flex-shrink-0" />

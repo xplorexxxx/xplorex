@@ -25,22 +25,22 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
 
           <div className="relative">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
-              Ready to stop the leak?
+              Prêt à stopper les pertes ?
             </h2>
             <p className="text-lg text-primary-foreground/80 max-w-xl mx-auto mb-8">
-              Calculate your potential savings in 30 seconds, or book a free call to discuss your specific automation opportunities.
+              Calculez vos économies potentielles en 30 secondes, ou réservez un appel gratuit pour discuter de vos opportunités d'automatisation spécifiques.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button onClick={scrollToCalculator} className="btn-primary text-base py-3.5 px-8">
-                Calculate My ROI
+                Calculer mon ROI
                 <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 onClick={onBookCallClick}
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-xl border border-primary-foreground/20 transition-all duration-200"
               >
-                Book a Free Call
+                Réserver un appel gratuit
               </button>
             </div>
           </div>

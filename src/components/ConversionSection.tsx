@@ -16,7 +16,7 @@ interface ConversionSectionProps {
 }
 
 const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("de-DE", {
+  return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
@@ -25,7 +25,7 @@ const formatCurrency = (value: number): string => {
 };
 
 const formatNumber = (value: number): string => {
-  return new Intl.NumberFormat("de-DE").format(Math.round(value));
+  return new Intl.NumberFormat("fr-FR").format(Math.round(value));
 };
 
 const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps) => {
@@ -38,8 +38,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
 
     if (!email.trim()) {
       toast({
-        title: "Email required",
-        description: "Please enter your email to receive the report.",
+        title: "Email requis",
+        description: "Veuillez entrer votre email pour recevoir le rapport.",
         variant: "destructive",
       });
       return;
@@ -49,8 +49,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
+        title: "Email invalide",
+        description: "Veuillez entrer une adresse email valide.",
         variant: "destructive",
       });
       return;
@@ -92,17 +92,17 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                   <Mail className="w-5 h-5 text-accent" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">Get the Detailed Report</h3>
+                <h3 className="text-lg font-semibold text-foreground">Recevoir le rapport détaillé</h3>
               </div>
               <p className="text-muted-foreground text-sm mb-4">
-                Receive a breakdown of your calculations with actionable next steps via email.
+                Recevez une analyse détaillée de vos calculs avec les prochaines étapes concrètes par email.
               </p>
 
               {results && (
                 <div className="p-4 rounded-xl bg-secondary/50 border border-border/50 mb-4">
-                  <p className="text-sm text-muted-foreground mb-2">Your current calculation:</p>
+                  <p className="text-sm text-muted-foreground mb-2">Votre calcul actuel :</p>
                   <p className="text-sm font-medium text-foreground">
-                    {formatNumber(results.annualHours)} hours / {formatCurrency(results.annualCost)} wasted annually
+                    {formatNumber(results.annualHours)} heures / {formatCurrency(results.annualCost)} perdus annuellement
                   </p>
                 </div>
               )}
@@ -112,7 +112,7 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder="vous@entreprise.com"
                   className="input-field flex-1"
                   maxLength={255}
                 />
@@ -121,7 +121,7 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                   disabled={isSubmitting}
                   className="btn-primary whitespace-nowrap disabled:opacity-50"
                 >
-                  {isSubmitting ? "Sending..." : "Send My Report"}
+                  {isSubmitting ? "Envoi..." : "Envoyer mon rapport"}
                 </button>
               </form>
             </div>
@@ -132,13 +132,13 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-accent" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">Prefer to Talk?</h3>
+                <h3 className="text-lg font-semibold text-foreground">Préférez-vous échanger ?</h3>
               </div>
               <p className="text-muted-foreground text-sm mb-4">
-                Book a free 15-minute call to discuss your specific automation opportunities and get personalized recommendations.
+                Réservez un appel gratuit de 15 minutes pour discuter de vos opportunités d'automatisation spécifiques et obtenir des recommandations personnalisées.
               </p>
               <button onClick={onBookCallClick} className="btn-secondary w-full md:w-auto">
-                Book a Free Call
+                Réserver un appel gratuit
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

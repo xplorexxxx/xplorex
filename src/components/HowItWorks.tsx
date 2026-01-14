@@ -4,20 +4,20 @@ const steps = [
   {
     icon: ClipboardList,
     step: "01",
-    title: "Enter Your Data",
-    description: "Tell us about your team, the repetitive task, and how often it happens. Takes 30 seconds.",
+    title: "Entrez vos données",
+    description: "Décrivez votre équipe, la tâche répétitive et sa fréquence. Cela prend 30 secondes.",
   },
   {
     icon: Calculator,
     step: "02",
-    title: "See the Numbers",
-    description: "Get instant calculations showing hours and euros wasted annually—with full transparency on the math.",
+    title: "Voyez les chiffres",
+    description: "Obtenez des calculs instantanés montrant les heures et euros perdus annuellement — avec une transparence totale sur les formules.",
   },
   {
     icon: Lightbulb,
     step: "03",
-    title: "Spot Opportunities",
-    description: "Understand your automation potential and get a detailed report to share with your team.",
+    title: "Identifiez les opportunités",
+    description: "Comprenez votre potentiel d'automatisation et obtenez un rapport détaillé à partager avec votre équipe.",
   },
 ];
 
@@ -27,10 +27,10 @@ const HowItWorks = () => {
       <div className="container-narrow">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            How it works
+            Comment ça marche
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Three simple steps to uncover your hidden operational costs.
+            Trois étapes simples pour découvrir vos coûts opérationnels cachés.
           </p>
         </div>
 

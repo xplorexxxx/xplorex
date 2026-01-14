@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "Is this estimate accurate?",
-    answer: "This calculator provides a reliable ballpark estimate based on the inputs you provide. Real-world results may vary based on task complexity, interruptions, and other factors. The goal is to highlight the scale of potential savings—even if actual numbers differ by 20-30%, the opportunity is usually significant.",
+    question: "Cette estimation est-elle précise ?",
+    answer: "Ce calculateur fournit une estimation fiable basée sur les données que vous fournissez. Les résultats réels peuvent varier en fonction de la complexité des tâches, des interruptions et d'autres facteurs. L'objectif est de mettre en évidence l'ampleur des économies potentielles — même si les chiffres réels diffèrent de 20-30%, l'opportunité est généralement significative.",
   },
   {
-    question: "What hourly cost should I use?",
-    answer: "Use the fully-loaded cost—not just salary. This includes benefits, taxes, office space, equipment, and overhead. A good rule of thumb: multiply the gross salary by 1.3-1.5 and divide by annual working hours (typically 1,800-2,000). Most companies land between €35-€70 per hour for operational roles.",
+    question: "Quel coût horaire dois-je utiliser ?",
+    answer: "Utilisez le coût chargé — pas seulement le salaire. Cela inclut les avantages sociaux, les taxes, l'espace de bureau, l'équipement et les frais généraux. Une bonne règle : multipliez le salaire brut par 1,3-1,5 et divisez par les heures de travail annuelles (généralement 1 800-2 000). La plupart des entreprises se situent entre 35€ et 70€ de l'heure pour les postes opérationnels.",
   },
   {
-    question: "What types of tasks are best for automation?",
-    answer: "Tasks that are high-volume, rules-based, and repetitive are prime candidates. Examples: data entry, report generation, email responses, status updates, invoice processing, and customer FAQ handling. If you can write a clear checklist for it, it's likely automatable.",
+    question: "Quels types de tâches sont les meilleurs pour l'automatisation ?",
+    answer: "Les tâches à fort volume, basées sur des règles et répétitives sont les meilleures candidates. Exemples : saisie de données, génération de rapports, réponses aux emails, mises à jour de statut, traitement de factures et gestion des FAQ clients. Si vous pouvez écrire une checklist claire pour une tâche, elle est probablement automatisable.",
   },
   {
-    question: "Do I need AI, or just automation?",
-    answer: "It depends on the task. Simple, structured tasks (like moving data between systems) only need workflow automation. Tasks requiring judgment, language understanding, or handling unstructured data benefit from AI. Many solutions combine both—automation for the flow, AI for the decisions.",
+    question: "Ai-je besoin d'IA, ou juste d'automatisation ?",
+    answer: "Cela dépend de la tâche. Les tâches simples et structurées (comme déplacer des données entre systèmes) n'ont besoin que d'automatisation de workflow. Les tâches nécessitant du jugement, de la compréhension du langage ou le traitement de données non structurées bénéficient de l'IA. Beaucoup de solutions combinent les deux — l'automatisation pour le flux, l'IA pour les décisions.",
   },
   {
-    question: "How fast can we implement a pilot?",
-    answer: "Most automation pilots can be scoped, built, and tested within 2-4 weeks. Simple integrations may take just days. The key is starting with a well-defined, measurable process. We recommend beginning with your biggest time-waster—that's where ROI is fastest.",
+    question: "Quelle est la rapidité de mise en œuvre d'un pilote ?",
+    answer: "La plupart des pilotes d'automatisation peuvent être définis, construits et testés en 2-4 semaines. Les intégrations simples peuvent ne prendre que quelques jours. La clé est de commencer par un processus bien défini et mesurable. Nous recommandons de commencer par votre plus grande perte de temps — c'est là que le ROI est le plus rapide.",
   },
   {
-    question: "Is my data safe?",
-    answer: "This calculator runs entirely in your browser—no data is sent to any server. When you request a report, the data is stored locally on your device. If you book a call, only the information you explicitly provide is shared with our team.",
+    question: "Mes données sont-elles en sécurité ?",
+    answer: "Ce calculateur fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée à un serveur. Lorsque vous demandez un rapport, les données sont stockées localement sur votre appareil. Si vous réservez un appel, seules les informations que vous fournissez explicitement sont partagées avec notre équipe.",
   },
 ];
 
@@ -38,10 +38,10 @@ const FAQ = () => {
       <div className="container-narrow">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Frequently asked questions
+            Questions fréquentes
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Everything you need to know about the calculator and automation opportunities.
+            Tout ce que vous devez savoir sur le calculateur et les opportunités d'automatisation.
           </p>
         </div>
 
