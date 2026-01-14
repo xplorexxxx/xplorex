@@ -20,8 +20,8 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
           style={{ background: "var(--gradient-primary)" }}
         >
           {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-0 left-0 w-64 h-64 bg-primary-foreground/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary-foreground/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
           <div className="relative">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">Prêt à stopper les pertes ?</h2>

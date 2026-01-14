@@ -89,8 +89,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
             {/* Email Report */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-accent" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground">Recevoir le rapport détaillé</h3>
               </div>
@@ -130,8 +130,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
             {/* Book a Call */}
             <div className="md:border-l md:border-border/50 md:pl-8">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-accent" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground">Préférez-vous échanger ?</h3>
               </div>

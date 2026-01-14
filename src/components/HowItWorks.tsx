@@ -38,17 +38,17 @@ const HowItWorks = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="relative p-8 rounded-2xl bg-card border border-border/50 group hover:border-accent/30 transition-all duration-300"
+              className="relative p-8 rounded-2xl bg-card border border-border/50 group hover:border-primary/30 transition-all duration-300"
               style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {/* Step number */}
-              <div className="text-5xl font-bold text-accent/10 absolute top-4 right-6">
+              <div className="text-5xl font-bold text-primary/10 absolute top-4 right-6">
                 {step.step}
               </div>
               
               {/* Icon */}
-              <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
-                <step.icon className="w-6 h-6 text-accent" />
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <step.icon className="w-6 h-6 text-primary" />
               </div>
 
               <h3 className="text-xl font-semibold text-foreground mb-3">
