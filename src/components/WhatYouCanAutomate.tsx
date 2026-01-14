@@ -44,7 +44,7 @@ const WhatYouCanAutomate = () => {
               style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {/* Subtle gradient background on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(135deg, hsl(192 62% 35% / 0.02) 0%, hsl(192 62% 35% / 0.05) 100%)" }} />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(135deg, hsl(216 94% 55% / 0.02) 0%, hsl(216 94% 55% / 0.05) 100%)" }} />
               
               <div className="relative flex gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
