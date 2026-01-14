@@ -72,12 +72,12 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     setIsSubmitting(false);
-    navigate("/thank-you", { 
-      state: { 
-        type: "report", 
+    navigate("/thank-you", {
+      state: {
+        type: "report",
         email,
         results,
-      } 
+      },
     });
   };
 
@@ -102,7 +102,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 <div className="p-4 rounded-xl bg-secondary/50 border border-border/50 mb-4">
                   <p className="text-sm text-muted-foreground mb-2">Votre calcul actuel :</p>
                   <p className="text-sm font-medium text-foreground">
-                    {formatNumber(results.annualHours)} heures / {formatCurrency(results.annualCost)} perdus annuellement
+                    {formatNumber(results.annualHours)} heures / {formatCurrency(results.annualCost)} perdus
+                    annuellement
                   </p>
                 </div>
               )}
@@ -135,10 +136,11 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 <h3 className="text-lg font-semibold text-foreground">Préférez-vous échanger ?</h3>
               </div>
               <p className="text-muted-foreground text-sm mb-4">
-                Réservez un appel gratuit de 15 minutes pour discuter de vos opportunités d'automatisation spécifiques et obtenir des recommandations personnalisées.
+                Réservez un appel gratuit de 15 minutes pour discuter de vos opportunités d'automatisation spécifiques
+                et obtenir des recommandations personnalisées.
               </p>
               <button onClick={onBookCallClick} className="btn-secondary w-full md:w-auto">
-                Réserver un appel gratuit
+                Réserver un appel offer
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
