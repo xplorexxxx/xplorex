@@ -17,7 +17,7 @@ const steps = [
     icon: Lightbulb,
     step: "03",
     title: "Identifiez les opportunités",
-    description: "Comprenez votre potentiel d'automatisation et obtenez un rapport détaillé à partager avec votre équipe.",
+    description: "Obtenez des calculs instantanés montrant les heures et euros perdus annuellement avec une transparence totale sur les formules.",
   },
 ];
 
