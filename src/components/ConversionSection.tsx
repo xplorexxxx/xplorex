@@ -140,7 +140,7 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 obtenir des recommandations personnalisées.
               </p>
               <button onClick={onBookCallClick} className="btn-secondary w-full md:w-auto">
-                Réserver un appel offer
+                Réserver un appel offert
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
