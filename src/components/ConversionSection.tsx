@@ -136,8 +136,8 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 <h3 className="text-lg font-semibold text-foreground">Préférez-vous échanger ?</h3>
               </div>
               <p className="text-muted-foreground text-sm mb-4">
-                Réservez un appel gratuit de 15 minutes pour discuter de vos opportunités d'automatisation spécifiques
-                et obtenir des recommandations personnalisées.
+                Réservez un appel offert de 15 minutes pour discuter de vos opportunités d'automatisation spécifiques et
+                obtenir des recommandations personnalisées.
               </p>
               <button onClick={onBookCallClick} className="btn-secondary w-full md:w-auto">
                 Réserver un appel offer
