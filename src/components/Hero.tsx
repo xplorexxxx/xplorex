@@ -26,8 +26,7 @@ const Hero = () => {
         </div>
 
         {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">Identifiez les heures cachées et  les € perdus dans vos opérations  instantanément.<span className="gradient-text">€ perdus</span> dans vos opérations —
-          instantanément.
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">Identifiez les heures cachées et  les €  perdus ​dans vos opérations instantanément.<span className="gradient-text">€ perdus</span> ​dans vos opérations instantanément.
         </h1>
 
         {/* Subheadline */}
