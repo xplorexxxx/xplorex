@@ -15,7 +15,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
   return (
     <section className="section-padding">
       <div className="container-narrow">
-        <div 
+        <div
           className="relative overflow-hidden rounded-3xl p-8 sm:p-12 lg:p-16 text-center"
           style={{ background: "var(--gradient-primary)" }}
         >
@@ -24,11 +24,10 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
           <div className="relative">
-            <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
-              Prêt à stopper les pertes ?
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">Prêt à stopper les pertes ?</h2>
             <p className="text-lg text-primary-foreground/80 max-w-xl mx-auto mb-8">
-              Calculez vos économies potentielles en 30 secondes, ou réservez un appel gratuit pour discuter de vos opportunités d'automatisation spécifiques.
+              Calculez vos économies potentielles en 30 secondes, ou réservez un appel gratuit pour discuter de vos
+              opportunités d'automatisation spécifiques.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -40,7 +39,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
                 onClick={onBookCallClick}
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-xl border border-primary-foreground/20 transition-all duration-200"
               >
-                Réserver un appel gratuit
+                Réserver un appel offert
               </button>
             </div>
           </div>
