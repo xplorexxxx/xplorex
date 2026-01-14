@@ -4,15 +4,19 @@ const Hero = () => {
     const element = document.querySelector("#calculator");
     if (element) {
       element.scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
-  return <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+  return (
+    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10" style={{
-      background: "var(--gradient-hero)"
-    }} />
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: "var(--gradient-hero)",
+        }}
+      />
 
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
@@ -26,7 +30,9 @@ const Hero = () => {
         </div>
 
         {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">Identifiez les heures cachées et  les €  perdus ​dans vos opérations instantanément.<span className="gradient-text">€ perdus</span> ​dans vos opérations instantanément.
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">
+          Identifiez les heures cachées et  les €  perdus ​dans vos opérations instantanément.
+          <span className="gradient-text">€ perdus</span>
         </h1>
 
         {/* Subheadline */}
@@ -67,6 +73,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
 export default Hero;
