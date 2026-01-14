@@ -30,7 +30,7 @@ const defaultInputs: CalculatorInputs = {
 };
 
 const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("de-DE", {
+  return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 0,
@@ -39,7 +39,7 @@ const formatCurrency = (value: number): string => {
 };
 
 const formatNumber = (value: number): string => {
-  return new Intl.NumberFormat("de-DE").format(Math.round(value));
+  return new Intl.NumberFormat("fr-FR").format(Math.round(value));
 };
 
 interface CalculatorProps {
@@ -132,13 +132,13 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
     try {
       await navigator.clipboard.writeText(url);
       toast({
-        title: "Link copied!",
-        description: "Share this link to show your calculation.",
+        title: "Lien copié !",
+        description: "Partagez ce lien pour montrer votre calcul.",
       });
     } catch {
       toast({
-        title: "Couldn't copy",
-        description: "Please copy the URL manually from your browser.",
+        title: "Impossible de copier",
+        description: "Veuillez copier l'URL manuellement depuis votre navigateur.",
         variant: "destructive",
       });
     }
@@ -151,10 +151,10 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
       <div className="container-narrow">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Calculate Your ROI Leak
+            Calculez votre perte de ROI
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Enter your numbers below to see how much time and money your team loses to repetitive tasks each year.
+            Entrez vos chiffres ci-dessous pour voir combien de temps et d'argent votre équipe perd chaque année sur des tâches répétitives.
           </p>
         </div>
 
@@ -162,11 +162,11 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
           <div className="grid lg:grid-cols-2 gap-10">
             {/* Inputs Section */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-foreground mb-6">Your Inputs</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-6">Vos entrées</h3>
 
               {/* Team Size */}
               <div>
-                <label className="label-text">Team size affected</label>
+                <label className="label-text">Taille de l'équipe concernée</label>
                 <input
                   type="number"
                   value={inputs.teamSize}
@@ -175,12 +175,12 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   max={500}
                   className="input-field"
                 />
-                <p className="helper-text">How many people perform this task? (1-500)</p>
+                <p className="helper-text">Combien de personnes effectuent cette tâche ? (1-500)</p>
               </div>
 
               {/* Time per Task */}
               <div>
-                <label className="label-text">Time per task (minutes)</label>
+                <label className="label-text">Temps par tâche (minutes)</label>
                 <input
                   type="number"
                   value={inputs.timePerTask}
@@ -189,20 +189,20 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   max={240}
                   className="input-field"
                 />
-                <p className="helper-text">How long does it take to complete once? (1-240 min)</p>
+                <p className="helper-text">Combien de temps faut-il pour terminer une fois ? (1-240 min)</p>
               </div>
 
               {/* Frequency Type */}
               <div>
-                <label className="label-text">Frequency</label>
+                <label className="label-text">Fréquence</label>
                 <div className="flex gap-3">
                   <select
                     value={inputs.frequencyType}
                     onChange={(e) => handleInputChange("frequencyType", e.target.value)}
                     className="input-field flex-1"
                   >
-                    <option value="day">Times per day</option>
-                    <option value="week">Times per week</option>
+                    <option value="day">Fois par jour</option>
+                    <option value="week">Fois par semaine</option>
                   </select>
                   <input
                     type="number"
@@ -213,12 +213,12 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                     className="input-field w-24"
                   />
                 </div>
-                <p className="helper-text">How often is this task performed? (1-500)</p>
+                <p className="helper-text">À quelle fréquence cette tâche est-elle effectuée ? (1-500)</p>
               </div>
 
               {/* Working Days */}
               <div>
-                <label className="label-text">Working days per week</label>
+                <label className="label-text">Jours de travail par semaine</label>
                 <input
                   type="number"
                   value={inputs.workingDays}
@@ -227,12 +227,12 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   max={7}
                   className="input-field"
                 />
-                <p className="helper-text">Your team's working days (1-7)</p>
+                <p className="helper-text">Jours de travail de votre équipe (1-7)</p>
               </div>
 
               {/* Hourly Cost */}
               <div>
-                <label className="label-text">Average fully-loaded hourly cost (€)</label>
+                <label className="label-text">Coût horaire moyen chargé (€)</label>
                 <input
                   type="number"
                   value={inputs.hourlyCost}
@@ -241,13 +241,13 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   max={300}
                   className="input-field"
                 />
-                <p className="helper-text">Include salary, benefits, overhead (€10-300)</p>
+                <p className="helper-text">Incluez salaire, avantages, charges (10€-300€)</p>
               </div>
 
               {/* Automation Potential Slider */}
               <div>
                 <label className="label-text flex items-center gap-2">
-                  Estimated automation potential
+                  Potentiel d'automatisation estimé
                   <span className="text-accent font-semibold">{inputs.automationPotential}%</span>
                 </label>
                 <input
@@ -269,29 +269,29 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
               <div className="flex gap-3 pt-4">
                 <button onClick={handleReset} className="btn-secondary flex-1 text-sm">
                   <RotateCcw className="w-4 h-4" />
-                  Reset
+                  Réinitialiser
                 </button>
                 <button onClick={handleShare} className="btn-secondary flex-1 text-sm">
                   <Share2 className="w-4 h-4" />
-                  Share
+                  Partager
                 </button>
               </div>
             </div>
 
             {/* Results Section */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-foreground mb-6">Your Results</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-6">Vos résultats</h3>
 
               {/* Main Results */}
               <div className="p-6 rounded-2xl bg-primary text-primary-foreground">
                 <div className="space-y-6">
                   <div>
-                    <p className="text-sm opacity-80 mb-1">Hours wasted per year</p>
+                    <p className="text-sm opacity-80 mb-1">Heures perdues par an</p>
                     <p className="text-4xl font-bold">{formatNumber(results.annualHours)}</p>
                   </div>
                   <div className="h-px bg-primary-foreground/20" />
                   <div>
-                    <p className="text-sm opacity-80 mb-1">Cost wasted per year</p>
+                    <p className="text-sm opacity-80 mb-1">Coût perdu par an</p>
                     <p className="text-4xl font-bold">{formatCurrency(results.annualCost)}</p>
                   </div>
                 </div>
@@ -306,15 +306,15 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
                     <Info className="w-4 h-4 text-accent" />
                   </div>
-                  <p className="font-semibold text-foreground">Potential Savings ({inputs.automationPotential}% automation)</p>
+                  <p className="font-semibold text-foreground">Économies potentielles ({inputs.automationPotential}% d'automatisation)</p>
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Hours saved</p>
+                    <p className="text-sm text-muted-foreground mb-1">Heures économisées</p>
                     <p className="text-2xl font-bold gradient-text">{formatNumber(results.potentialSavingsHours)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Euros saved</p>
+                    <p className="text-sm text-muted-foreground mb-1">Euros économisés</p>
                     <p className="text-2xl font-bold gradient-text">{formatCurrency(results.potentialSavingsCost)}</p>
                   </div>
                 </div>
@@ -326,7 +326,7 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   onClick={() => setShowFormula(!showFormula)}
                   className="w-full px-4 py-3 flex items-center justify-between text-sm font-medium text-foreground hover:bg-secondary/50 transition-colors"
                 >
-                  <span>Math transparency</span>
+                  <span>Transparence des calculs</span>
                   {showFormula ? (
                     <ChevronUp className="w-4 h-4 text-muted-foreground" />
                   ) : (
@@ -336,22 +336,22 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                 {showFormula && (
                   <div className="px-4 py-3 bg-secondary/30 text-sm text-muted-foreground border-t border-border space-y-2">
                     <p>
-                      <strong>Annual runs:</strong>{" "}
+                      <strong>Exécutions annuelles :</strong>{" "}
                       {inputs.frequencyType === "day"
-                        ? `${inputs.frequencyValue} × ${inputs.workingDays} days × 52 weeks = ${formatNumber(inputs.frequencyValue * inputs.workingDays * 52)}`
-                        : `${inputs.frequencyValue} × 52 weeks = ${formatNumber(inputs.frequencyValue * 52)}`}
+                        ? `${inputs.frequencyValue} × ${inputs.workingDays} jours × 52 semaines = ${formatNumber(inputs.frequencyValue * inputs.workingDays * 52)}`
+                        : `${inputs.frequencyValue} × 52 semaines = ${formatNumber(inputs.frequencyValue * 52)}`}
                     </p>
                     <p>
-                      <strong>Annual minutes:</strong> {inputs.teamSize} people × {inputs.timePerTask} min × {formatNumber(inputs.frequencyType === "day" ? inputs.frequencyValue * inputs.workingDays * 52 : inputs.frequencyValue * 52)} runs = {formatNumber(results.annualHours * 60)}
+                      <strong>Minutes annuelles :</strong> {inputs.teamSize} personnes × {inputs.timePerTask} min × {formatNumber(inputs.frequencyType === "day" ? inputs.frequencyValue * inputs.workingDays * 52 : inputs.frequencyValue * 52)} exécutions = {formatNumber(results.annualHours * 60)}
                     </p>
                     <p>
-                      <strong>Annual hours:</strong> {formatNumber(results.annualHours * 60)} min ÷ 60 = {formatNumber(results.annualHours)} hours
+                      <strong>Heures annuelles :</strong> {formatNumber(results.annualHours * 60)} min ÷ 60 = {formatNumber(results.annualHours)} heures
                     </p>
                     <p>
-                      <strong>Annual cost:</strong> {formatNumber(results.annualHours)} hours × €{inputs.hourlyCost} = {formatCurrency(results.annualCost)}
+                      <strong>Coût annuel :</strong> {formatNumber(results.annualHours)} heures × {inputs.hourlyCost}€ = {formatCurrency(results.annualCost)}
                     </p>
                     <p>
-                      <strong>Potential savings:</strong> {formatCurrency(results.annualCost)} × {inputs.automationPotential}% = {formatCurrency(results.potentialSavingsCost)}
+                      <strong>Économies potentielles :</strong> {formatCurrency(results.annualCost)} × {inputs.automationPotential}% = {formatCurrency(results.potentialSavingsCost)}
                     </p>
                   </div>
                 )}

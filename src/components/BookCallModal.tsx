@@ -25,8 +25,8 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
     
     if (!formData.name.trim() || !formData.email.trim()) {
       toast({
-        title: "Please fill in required fields",
-        description: "Name and email are required.",
+        title: "Veuillez remplir les champs obligatoires",
+        description: "Le nom et l'email sont requis.",
         variant: "destructive",
       });
       return;
@@ -36,8 +36,8 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
+        title: "Email invalide",
+        description: "Veuillez entrer une adresse email valide.",
         variant: "destructive",
       });
       return;
@@ -78,34 +78,34 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
         </button>
 
         <h3 className="text-2xl font-bold text-foreground mb-2">
-          Book a Free Call
+          Réserver un appel gratuit
         </h3>
         <p className="text-muted-foreground mb-6">
-          Let's discuss your automation opportunities. We'll get back to you within 24 hours.
+          Discutons de vos opportunités d'automatisation. Nous vous recontacterons sous 24 heures.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label-text">
-              Name <span className="text-destructive">*</span>
+              Nom <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-              placeholder="Your name"
+              placeholder="Votre nom"
               className="input-field"
               maxLength={100}
             />
           </div>
 
           <div>
-            <label className="label-text">Company</label>
+            <label className="label-text">Entreprise</label>
             <input
               type="text"
               value={formData.company}
               onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-              placeholder="Your company"
+              placeholder="Votre entreprise"
               className="input-field"
               maxLength={100}
             />
@@ -119,18 +119,18 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-              placeholder="you@company.com"
+              placeholder="vous@entreprise.com"
               className="input-field"
               maxLength={255}
             />
           </div>
 
           <div>
-            <label className="label-text">Biggest time-waster</label>
+            <label className="label-text">Plus grande perte de temps</label>
             <textarea
               value={formData.timeWaster}
               onChange={(e) => setFormData((prev) => ({ ...prev, timeWaster: e.target.value }))}
-              placeholder="What repetitive task costs you the most time?"
+              placeholder="Quelle tâche répétitive vous coûte le plus de temps ?"
               className="input-field min-h-[100px] resize-none"
               maxLength={500}
             />
@@ -141,7 +141,7 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
             disabled={isSubmitting}
             className="btn-primary w-full py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Submitting..." : "Request a Call"}
+            {isSubmitting ? "Envoi en cours..." : "Demander un appel"}
           </button>
         </form>
       </div>

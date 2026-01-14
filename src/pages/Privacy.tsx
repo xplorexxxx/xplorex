@@ -10,79 +10,79 @@ const Privacy = () => {
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to home
+          Retour à l'accueil
         </Link>
 
         <div className="glass-card p-8 sm:p-12">
-          <h1 className="text-3xl font-bold text-foreground mb-8">Privacy Policy</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">Politique de confidentialité</h1>
 
           <div className="prose prose-slate max-w-none space-y-6 text-muted-foreground">
             <p>
-              <strong className="text-foreground">Last updated:</strong> {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              <strong className="text-foreground">Dernière mise à jour :</strong> {new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
             </p>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">1. Information We Collect</h2>
+              <h2 className="text-xl font-semibold text-foreground">1. Informations que nous collectons</h2>
               <p>
-                When you use the ROI Leak Calculator, we may collect the following information:
+                Lorsque vous utilisez le Calculateur ROI, nous pouvons collecter les informations suivantes :
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Email address (when you request a report or book a call)</li>
-                <li>Name and company (when you book a call)</li>
-                <li>Calculator inputs and results (stored locally in your browser)</li>
+                <li>Adresse email (lorsque vous demandez un rapport ou réservez un appel)</li>
+                <li>Nom et entreprise (lorsque vous réservez un appel)</li>
+                <li>Entrées et résultats du calculateur (stockés localement dans votre navigateur)</li>
               </ul>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">2. How We Use Your Information</h2>
+              <h2 className="text-xl font-semibold text-foreground">2. Comment nous utilisons vos informations</h2>
               <p>
-                We use the information we collect to:
+                Nous utilisons les informations collectées pour :
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Send you the detailed ROI report you requested</li>
-                <li>Contact you to schedule your consultation call</li>
-                <li>Improve our calculator and services</li>
+                <li>Vous envoyer le rapport ROI détaillé que vous avez demandé</li>
+                <li>Vous contacter pour planifier votre appel de consultation</li>
+                <li>Améliorer notre calculateur et nos services</li>
               </ul>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">3. Data Storage</h2>
+              <h2 className="text-xl font-semibold text-foreground">3. Stockage des données</h2>
               <p>
-                Calculator data is stored locally in your browser using localStorage. This data never leaves your device unless you explicitly submit a form. When you submit your email or booking request, that information is stored securely.
+                Les données du calculateur sont stockées localement dans votre navigateur en utilisant localStorage. Ces données ne quittent jamais votre appareil sauf si vous soumettez explicitement un formulaire. Lorsque vous soumettez votre email ou une demande de réservation, ces informations sont stockées en toute sécurité.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">4. Data Sharing</h2>
+              <h2 className="text-xl font-semibold text-foreground">4. Partage des données</h2>
               <p>
-                We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties. We may share information with trusted third parties who assist us in operating our website and conducting our business, so long as those parties agree to keep this information confidential.
+                Nous ne vendons, n'échangeons ni ne transférons autrement vos informations personnelles identifiables à des tiers. Nous pouvons partager des informations avec des tiers de confiance qui nous aident à exploiter notre site web et à mener nos activités, à condition que ces parties acceptent de garder ces informations confidentielles.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">5. Your Rights</h2>
+              <h2 className="text-xl font-semibold text-foreground">5. Vos droits</h2>
               <p>
-                You have the right to:
+                Vous avez le droit de :
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Access the personal information we hold about you</li>
-                <li>Request correction of any inaccurate data</li>
-                <li>Request deletion of your data</li>
-                <li>Withdraw consent at any time</li>
+                <li>Accéder aux informations personnelles que nous détenons à votre sujet</li>
+                <li>Demander la correction de toute donnée inexacte</li>
+                <li>Demander la suppression de vos données</li>
+                <li>Retirer votre consentement à tout moment</li>
               </ul>
             </section>
 
             <section className="space-y-3">
               <h2 className="text-xl font-semibold text-foreground">6. Cookies</h2>
               <p>
-                This website does not use tracking cookies. We only use essential cookies required for the website to function properly.
+                Ce site web n'utilise pas de cookies de suivi. Nous utilisons uniquement les cookies essentiels nécessaires au bon fonctionnement du site.
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold text-foreground">7. Contact Us</h2>
+              <h2 className="text-xl font-semibold text-foreground">7. Nous contacter</h2>
               <p>
-                If you have any questions about this Privacy Policy, please contact us through the booking form on our website.
+                Si vous avez des questions concernant cette Politique de confidentialité, veuillez nous contacter via le formulaire de réservation sur notre site.
               </p>
             </section>
           </div>

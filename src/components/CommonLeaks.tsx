@@ -3,33 +3,33 @@ import { Clock, Zap, RefreshCw, FileSearch, MessageSquare, Database } from "luci
 const leaks = [
   {
     icon: Clock,
-    title: "Time Wasted on Manual Entry",
-    description: "Copy-pasting data between systems, filling forms, updating spreadsheets manually.",
+    title: "Temps perdu en saisie manuelle",
+    description: "Copier-coller des données entre systèmes, remplir des formulaires, mettre à jour des tableurs manuellement.",
   },
   {
     icon: Zap,
-    title: "Slow Decision Making",
-    description: "Waiting for approvals, chasing stakeholders, delayed responses that stall projects.",
+    title: "Prise de décision lente",
+    description: "Attendre des approbations, relancer des parties prenantes, retards de réponse qui bloquent les projets.",
   },
   {
     icon: RefreshCw,
-    title: "Repetitive Processes",
-    description: "Running the same reports, sending similar emails, performing identical checks daily.",
+    title: "Processus répétitifs",
+    description: "Exécuter les mêmes rapports, envoyer des emails similaires, effectuer des vérifications identiques chaque jour.",
   },
   {
     icon: FileSearch,
-    title: "Information Hunting",
-    description: "Searching for documents, hunting down answers, navigating scattered knowledge bases.",
+    title: "Recherche d'informations",
+    description: "Chercher des documents, traquer des réponses, naviguer dans des bases de connaissances dispersées.",
   },
   {
     icon: MessageSquare,
-    title: "Answering Repeat Questions",
-    description: "Same customer queries, internal FAQs, onboarding questions asked over and over.",
+    title: "Répondre aux mêmes questions",
+    description: "Mêmes questions clients, FAQ internes, questions d'intégration posées encore et encore.",
   },
   {
     icon: Database,
-    title: "Data Reconciliation",
-    description: "Matching records across systems, fixing inconsistencies, validating data integrity.",
+    title: "Réconciliation de données",
+    description: "Faire correspondre des enregistrements entre systèmes, corriger des incohérences, valider l'intégrité des données.",
   },
 ];
 
@@ -39,10 +39,10 @@ const CommonLeaks = () => {
       <div className="container-wide">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Common leaks we see
+            Les pertes courantes que nous observons
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            These are the hidden time drains that quietly cost businesses thousands every year.
+            Ce sont les pertes de temps cachées qui coûtent silencieusement des milliers d'euros aux entreprises chaque année.
           </p>
         </div>
 

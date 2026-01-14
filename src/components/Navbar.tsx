@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Menu, X, Calculator } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 interface NavbarProps {
   onBookCallClick: () => void;
@@ -9,8 +10,8 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { href: "#calculator", label: "Calculator" },
-    { href: "#how-it-works", label: "How it works" },
+    { href: "#calculator", label: "Calculateur" },
+    { href: "#how-it-works", label: "Comment ça marche" },
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -28,10 +29,8 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2 font-bold text-lg text-foreground">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-              <Calculator className="w-4 h-4 text-accent-foreground" />
-            </div>
-            <span>ROI Leak Calculator</span>
+            <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+            <span>Calculateur ROI</span>
           </a>
 
           {/* Desktop Nav */}
@@ -46,7 +45,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               </button>
             ))}
             <button onClick={onBookCallClick} className="btn-primary text-sm py-2.5 px-5">
-              Book a Call
+              Réserver un appel
             </button>
           </div>
 
@@ -54,7 +53,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 text-foreground"
-            aria-label="Toggle menu"
+            aria-label="Ouvrir le menu"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -74,7 +73,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
                 </button>
               ))}
               <button onClick={onBookCallClick} className="btn-primary text-sm py-2.5 w-full">
-                Book a Call
+                Réserver un appel
               </button>
             </div>
           </div>
