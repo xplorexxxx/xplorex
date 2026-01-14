@@ -22,7 +22,7 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim() || !formData.email.trim()) {
       toast({
         title: "Veuillez remplir les champs obligatoires",
@@ -77,9 +77,7 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-2xl font-bold text-foreground mb-2">
-          Réserver un appel gratuit
-        </h3>
+        <h3 className="text-2xl font-bold text-foreground mb-2">Réserver un appel offert</h3>
         <p className="text-muted-foreground mb-6">
           Discutons de vos opportunités d'automatisation. Nous vous recontacterons sous 24 heures.
         </p>
