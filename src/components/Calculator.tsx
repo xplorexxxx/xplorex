@@ -248,7 +248,7 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
               <div>
                 <label className="label-text flex items-center gap-2">
                   Potentiel d'automatisation estimé
-                  <span className="text-accent font-semibold">{inputs.automationPotential}%</span>
+                  <span className="text-primary font-semibold">{inputs.automationPotential}%</span>
                 </label>
                 <input
                   type="range"
@@ -257,7 +257,7 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   min={10}
                   max={90}
                   step={5}
-                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-accent"
+                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>10%</span>
@@ -291,7 +291,7 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
                   </div>
                   <div className="h-px bg-primary-foreground/20" />
                   <div>
-                    <p className="text-sm opacity-80 mb-1">Coût perdu par an</p>
+                    <p className="text-sm opacity-80 mb-1">Perte annuelle</p>
                     <p className="text-4xl font-bold">{formatCurrency(results.annualCost)}</p>
                   </div>
                 </div>
@@ -299,12 +299,12 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
 
               {/* Potential Savings */}
               <div 
-                className="p-6 rounded-2xl border-2 border-accent/30"
+                className="p-6 rounded-2xl border-2 border-success/30"
                 style={{ background: "linear-gradient(135deg, hsl(162 72% 41% / 0.05) 0%, hsl(162 72% 41% / 0.1) 100%)" }}
               >
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Info className="w-4 h-4 text-accent" />
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center">
+                    <Info className="w-4 h-4 text-success" />
                   </div>
                   <p className="font-semibold text-foreground">Économies potentielles ({inputs.automationPotential}% d'automatisation)</p>
                 </div>

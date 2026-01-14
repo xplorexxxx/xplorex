@@ -21,13 +21,13 @@ const Hero = () => {
       />
 
       {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+      <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
 
       <div className="container-narrow text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-secondary border border-border text-sm text-muted-foreground">
-          <Sparkles className="w-4 h-4 text-accent" />
+          <Sparkles className="w-4 h-4 text-primary" />
           <span>Outil d'évaluation du ROI</span>
         </div>
 
@@ -56,19 +56,19 @@ const Hero = () => {
           <p className="text-sm text-muted-foreground mb-4">Conçu pour les opérateurs occupés</p>
           <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-foreground/70">
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent" />
+              <span className="w-2 h-2 rounded-full bg-primary" />
               Équipes Support
             </span>
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent" />
+              <span className="w-2 h-2 rounded-full bg-primary" />
               Opérations
             </span>
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent" />
+              <span className="w-2 h-2 rounded-full bg-primary" />
               Ventes
             </span>
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent" />
+              <span className="w-2 h-2 rounded-full bg-primary" />
               Administration
             </span>
           </div>
