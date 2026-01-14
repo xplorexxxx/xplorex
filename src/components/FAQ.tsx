@@ -8,7 +8,7 @@ import {
 const faqs = [
   {
     question: "Cette estimation est-elle précise ?",
-    answer: "Ce calculateur fournit une estimation fiable basée sur les données que vous fournissez. Les résultats réels peuvent varier en fonction de la complexité des tâches, des interruptions et d'autres facteurs. L'objectif est de mettre en évidence l'ampleur des économies potentielles — même si les chiffres réels diffèrent de 20-30%, l'opportunité est généralement significative.",
+    answer: "Ce calculateur fournit une estimation fiable basée sur les données que vous fournissez. Les résultats réels peuvent varier en fonction de la complexité des tâches, des interruptions et d'autres facteurs. L'objectif est de mettre en évidence l'ampleur des économies potentielles, même si les chiffres réels diffèrent de 20-30%, l'opportunité est généralement significative.",
   },
   {
     question: "Quel coût horaire dois-je utiliser ?",
