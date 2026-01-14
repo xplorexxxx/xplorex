@@ -32,7 +32,10 @@ const ThankYou = () => {
   const isBookCall = state?.type === "book_call";
 
   return (
-    <main className="min-h-screen flex items-center justify-center py-20 px-4" style={{ background: "var(--gradient-hero)" }}>
+    <main
+      className="min-h-screen flex items-center justify-center py-20 px-4"
+      style={{ background: "var(--gradient-hero)" }}
+    >
       <div className="max-w-lg w-full text-center">
         {/* Success Icon */}
         <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-accent/10 flex items-center justify-center animate-in-up">
@@ -70,11 +73,15 @@ const ThankYou = () => {
                   <div className="h-px bg-border" />
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Économies potentielles (heures)</span>
-                    <span className="font-semibold gradient-text">{formatNumber(state.results.potentialSavingsHours)}</span>
+                    <span className="font-semibold gradient-text">
+                      {formatNumber(state.results.potentialSavingsHours)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Économies potentielles (euros)</span>
-                    <span className="font-semibold gradient-text">{formatCurrency(state.results.potentialSavingsCost)}</span>
+                    <span className="font-semibold gradient-text">
+                      {formatCurrency(state.results.potentialSavingsCost)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -85,13 +92,13 @@ const ThankYou = () => {
         {isBookCall && (
           <div className="mb-8">
             <p className="text-lg text-muted-foreground mb-6">
-              Merci{state.name ? `, ${state.name}` : ""} ! Nous avons bien reçu votre demande et vous contacterons sous 24 heures pour planifier votre consultation gratuite sur l'automatisation.
+              Merci{state.name ? `, ${state.name}` : ""} ! Nous avons bien reçu votre demande et vous contacterons sous
+              24 heures pour planifier votre consultation offerte sur l'automatisation.
             </p>
 
             <div className="glass-card p-6 text-left">
               <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-accent" />
-                À quoi s'attendre
+                <Calendar className="w-4 h-4 text-accent" />À quoi s'attendre
               </h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
