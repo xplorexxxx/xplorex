@@ -28,9 +28,9 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
       <div className="container-wide">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 font-bold text-lg text-foreground">
-            <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
-            <span>Calculateur ROI</span>
+          <a href="/" className="flex items-center gap-2 text-foreground">
+            <img src={logo} alt="XPLORE X AI Logo" className="h-8 w-8 object-contain" />
+            <span className="font-poppins font-bold italic text-lg">XPLORE X</span>
           </a>
 
           {/* Desktop Nav */}

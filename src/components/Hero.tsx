@@ -1,4 +1,5 @@
 import { ArrowDown, Sparkles } from "lucide-react";
+
 const Hero = () => {
   const scrollToCalculator = () => {
     const element = document.querySelector("#calculator");
@@ -8,6 +9,7 @@ const Hero = () => {
       });
     }
   };
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
       {/* Background gradient */}
@@ -31,8 +33,7 @@ const Hero = () => {
 
         {/* Headline */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight text-balance">
-          Identifiez les heures cachées et  les €  perdus ​dans vos opérations instantanément.
-          <span className="gradient-text">€ perdus</span>
+          Identifiez les heures cachées et les <span className="text-accent">€ perdus</span> dans vos opérations instantanément.
         </h1>
 
         {/* Subheadline */}
@@ -76,4 +77,5 @@ const Hero = () => {
     </section>
   );
 };
+
 export default Hero;
