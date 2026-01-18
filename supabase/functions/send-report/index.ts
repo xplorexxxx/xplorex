@@ -1,7 +1,20 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
+/**
+ * SEND REPORT - Edge Function
+ * 
+ * This function handles the ROI Leak Calculator report sending:
+ * 1. Validates Turnstile token (bot protection)
+ * 2. Validates and sanitizes all inputs
+ * 3. Recomputes all calculations server-side (never trust client)
+ * 4. Sends email via Brevo transactional API
+ * 5. Enforces rate limiting (3/hour, 30s cooldown)
+ */
+
 const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
+
+// Email configuration
 const BREVO_SENDER_EMAIL = "contact@xplorex.io";
 const BREVO_SENDER_NAME = "ROI Leak Calculator";
 const RECIPIENT_EMAIL = "contact@xplorex.io";
@@ -10,7 +23,7 @@ const ICLOSED_BOOKING_LINK = "https://app.iclosed.io/e/raphaelgenin/audit-offert
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_REQUESTS_PER_WINDOW = 3;
-const MIN_REQUEST_INTERVAL_MS = 30 * 1000; // 30 seconds between requests (cooldown)
+const MIN_REQUEST_INTERVAL_MS = 30 * 1000; // 30 seconds cooldown
 
 // In-memory rate limiting store (per IP)
 const rateLimitStore = new Map<string, { count: number; windowStart: number; lastRequest: number }>();
@@ -32,70 +45,57 @@ interface ReportRequest {
     hourlyCost: number;
     automationPotential: number;
   };
-  results?: {
-    annualHours: number;
-    annualCost: number;
-    potentialSavingsHours: number;
-    potentialSavingsCost: number;
-  };
 }
 
 // Verify Cloudflare Turnstile token
 const verifyTurnstileToken = async (token: string, ip: string): Promise<{ success: boolean; error?: string }> => {
   if (!TURNSTILE_SECRET_KEY) {
-    console.warn("[send-report] TURNSTILE_SECRET_KEY not configured, skipping verification");
-    return { success: true }; // Allow if not configured (for development)
+    console.warn("[send-report] TURNSTILE_SECRET_KEY not configured");
+    return { success: true }; // Allow if not configured
   }
 
   try {
     const formData = new URLSearchParams();
-    formData.append('secret', TURNSTILE_SECRET_KEY);
-    formData.append('response', token);
-    formData.append('remoteip', ip);
+    formData.append("secret", TURNSTILE_SECRET_KEY);
+    formData.append("response", token);
+    formData.append("remoteip", ip);
 
-    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
     });
 
     const result = await response.json();
-    console.log("[send-report] Turnstile verification result:", JSON.stringify(result));
+    console.log("[send-report] Turnstile result:", JSON.stringify(result));
 
     if (result.success) {
       return { success: true };
-    } else {
-      const errorCodes = result['error-codes'] || [];
-      return { 
-        success: false, 
-        error: `Bot verification failed: ${errorCodes.join(', ') || 'invalid token'}` 
-      };
     }
+
+    const errorCodes = result["error-codes"] || [];
+    return { success: false, error: `Verification failed: ${errorCodes.join(", ") || "invalid token"}` };
   } catch (error) {
     console.error("[send-report] Turnstile verification error:", error);
-    return { success: false, error: "Bot verification service unavailable" };
+    return { success: false, error: "Verification service unavailable" };
   }
 };
 
-// Sanitize string input - remove HTML tags and trim
+// Sanitize string input
 const sanitizeString = (input: string): string => {
-  if (typeof input !== 'string') return '';
+  if (typeof input !== "string") return "";
   return input
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/&[^;]+;/g, '') // Remove HTML entities
-    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .replace(/<[^>]*>/g, "")
+    .replace(/&[^;]+;/g, "")
+    .replace(/[\x00-\x1F\x7F]/g, "")
     .trim()
-    .slice(0, 200); // Limit length to 200 chars
+    .slice(0, 200);
 };
 
-// Validate and sanitize number input
+// Validate number
 const validateNumber = (value: unknown, min: number, max: number): number | null => {
   const num = Number(value);
-  if (isNaN(num) || !isFinite(num) || num < min || num > max) {
-    return null;
-  }
+  if (isNaN(num) || !isFinite(num) || num < min || num > max) return null;
   return num;
 };
 
@@ -106,31 +106,23 @@ const validateInteger = (value: unknown, min: number, max: number): number | nul
   return Math.floor(num);
 };
 
-// Get client IP from request
+// Get client IP
 const getClientIP = (req: Request): string => {
-  // Check various headers for the real IP
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
-  }
-  const realIP = req.headers.get('x-real-ip');
-  if (realIP) {
-    return realIP;
-  }
-  const cfConnectingIP = req.headers.get('cf-connecting-ip');
-  if (cfConnectingIP) {
-    return cfConnectingIP;
-  }
-  // Fallback to a generic identifier
-  return 'unknown';
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  if (forwardedFor) return forwardedFor.split(",")[0].trim();
+  const realIP = req.headers.get("x-real-ip");
+  if (realIP) return realIP;
+  const cfIP = req.headers.get("cf-connecting-ip");
+  if (cfIP) return cfIP;
+  return "unknown";
 };
 
-// Check rate limit for an IP
+// Check rate limit
 const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number; reason?: string } => {
   const now = Date.now();
   const record = rateLimitStore.get(ip);
 
-  // Clean up old entries periodically
+  // Cleanup old entries
   if (rateLimitStore.size > 1000) {
     for (const [key, value] of rateLimitStore.entries()) {
       if (now - value.windowStart > RATE_LIMIT_WINDOW_MS * 2) {
@@ -140,37 +132,26 @@ const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number; re
   }
 
   if (!record) {
-    // First request from this IP
     rateLimitStore.set(ip, { count: 1, windowStart: now, lastRequest: now });
     return { allowed: true };
   }
 
-  // Check if window has expired
+  // Reset if window expired
   if (now - record.windowStart > RATE_LIMIT_WINDOW_MS) {
-    // Reset window
     rateLimitStore.set(ip, { count: 1, windowStart: now, lastRequest: now });
     return { allowed: true };
   }
 
-  // Check cooldown between requests (30 seconds)
+  // Cooldown check (30s between requests)
   if (now - record.lastRequest < MIN_REQUEST_INTERVAL_MS) {
     const retryAfter = Math.ceil((MIN_REQUEST_INTERVAL_MS - (now - record.lastRequest)) / 1000);
-    return { 
-      allowed: false, 
-      retryAfter, 
-      reason: `Please wait ${retryAfter} seconds before sending another report.` 
-    };
+    return { allowed: false, retryAfter, reason: `Please wait ${retryAfter} seconds.` };
   }
 
-  // Check max requests per window (3 per hour)
+  // Max requests check (3/hour)
   if (record.count >= MAX_REQUESTS_PER_WINDOW) {
     const retryAfter = Math.ceil((record.windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000);
-    const minutesRemaining = Math.ceil(retryAfter / 60);
-    return { 
-      allowed: false, 
-      retryAfter, 
-      reason: `Rate limit exceeded. Maximum ${MAX_REQUESTS_PER_WINDOW} reports per hour. Try again in ${minutesRemaining} minutes.` 
-    };
+    return { allowed: false, retryAfter, reason: `Rate limit exceeded. Try again in ${Math.ceil(retryAfter / 60)} minutes.` };
   }
 
   // Update record
@@ -180,21 +161,16 @@ const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number; re
   return { allowed: true };
 };
 
-const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
+// Format helpers
+const formatCurrency = (value: number): string =>
+  new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 
-const formatNumber = (value: number): string => {
-  return new Intl.NumberFormat("fr-FR").format(Math.round(value));
-};
+const formatNumber = (value: number): string =>
+  new Intl.NumberFormat("fr-FR").format(Math.round(value));
 
+// Main handler
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
+  // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -203,173 +179,111 @@ const handler = async (req: Request): Promise<Response> => {
   console.log(`[send-report] Request from IP: ${clientIP}`);
 
   try {
-    // ==========================================
-    // CHECK RATE LIMIT FIRST
-    // ==========================================
+    // ========== RATE LIMIT ==========
     const rateLimitResult = checkRateLimit(clientIP);
     if (!rateLimitResult.allowed) {
-      console.log(`[send-report] Rate limited IP: ${clientIP}, reason: ${rateLimitResult.reason}`);
-      return new Response(
-        JSON.stringify({ error: rateLimitResult.reason }),
-        { 
-          status: 429, 
-          headers: { 
-            "Content-Type": "application/json", 
-            "Retry-After": String(rateLimitResult.retryAfter || 60),
-            ...corsHeaders 
-          } 
-        }
-      );
+      console.log(`[send-report] Rate limited: ${clientIP}`);
+      return new Response(JSON.stringify({ error: rateLimitResult.reason }), {
+        status: 429,
+        headers: { "Content-Type": "application/json", "Retry-After": String(rateLimitResult.retryAfter || 60), ...corsHeaders },
+      });
     }
 
+    // Check Brevo API key
     if (!BREVO_API_KEY) {
-      console.error("[send-report] BREVO_API_KEY is not set");
+      console.error("[send-report] BREVO_API_KEY not set");
       throw new Error("Email service not configured");
     }
 
+    // Parse body
     let requestBody: ReportRequest;
     try {
       requestBody = await req.json();
     } catch {
-      return new Response(
-        JSON.stringify({ error: "Invalid JSON in request body" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid JSON" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     const { email, turnstileToken, inputs } = requestBody;
 
-    // ==========================================
-    // VERIFY TURNSTILE TOKEN (BOT PROTECTION)
-    // ==========================================
-    // Turnstile token is optional - if not provided, we rely on rate limiting
-    // This allows the form to work even if Turnstile fails to load (e.g., domain not configured)
+    // ========== TURNSTILE VERIFICATION ==========
     if (turnstileToken) {
       const turnstileResult = await verifyTurnstileToken(turnstileToken, clientIP);
       if (!turnstileResult.success) {
-        console.log(`[send-report] Turnstile verification failed for IP: ${clientIP}, error: ${turnstileResult.error}`);
-        return new Response(
-          JSON.stringify({ error: turnstileResult.error || "Bot verification failed. Please try again." }),
-          { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
+        console.log(`[send-report] Turnstile failed: ${turnstileResult.error}`);
+        return new Response(JSON.stringify({ error: "Bot verification failed. Please refresh and try again." }), {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
       }
-      console.log(`[send-report] Turnstile verification passed for IP: ${clientIP}`);
+      console.log("[send-report] Turnstile verified");
     } else {
-      console.log(`[send-report] No Turnstile token provided from IP: ${clientIP}, relying on rate limiting`);
+      console.log("[send-report] No Turnstile token, relying on rate limiting");
     }
 
-    // ==========================================
-    // VALIDATE EMAIL
-    // ==========================================
-    const sanitizedEmail = sanitizeString(email || '');
+    // ========== VALIDATE EMAIL ==========
+    const sanitizedEmail = sanitizeString(email || "");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!sanitizedEmail || !emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 200) {
-      console.log(`[send-report] Invalid email: ${sanitizedEmail}`);
-      return new Response(
-        JSON.stringify({ error: "Invalid email address (max 200 characters)" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid email address" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    // ==========================================
-    // VALIDATE ALL CALCULATOR INPUTS
-    // ==========================================
-    if (!inputs || typeof inputs !== 'object') {
-      return new Response(
-        JSON.stringify({ error: "Missing calculator inputs" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+    // ========== VALIDATE INPUTS ==========
+    if (!inputs || typeof inputs !== "object") {
+      return new Response(JSON.stringify({ error: "Missing calculator inputs" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     const validationErrors: string[] = [];
 
-    // Validate team_size: integer 1-500
     const teamSize = validateInteger(inputs.teamSize, 1, 500);
-    if (teamSize === null) {
-      validationErrors.push("Team size must be an integer between 1 and 500");
-    }
+    if (teamSize === null) validationErrors.push("Team size: 1-500");
 
-    // Validate time_per_task_minutes: integer 1-240
     const timePerTask = validateInteger(inputs.timePerTask, 1, 240);
-    if (timePerTask === null) {
-      validationErrors.push("Time per task must be an integer between 1 and 240 minutes");
-    }
+    if (timePerTask === null) validationErrors.push("Time per task: 1-240 minutes");
 
-    // Validate frequency_type: enum ["day", "week"]
-    const frequencyType = String(inputs.frequencyType || '');
-    if (!['day', 'week'].includes(frequencyType)) {
-      validationErrors.push("Frequency type must be 'day' or 'week'");
-    }
+    const frequencyType = String(inputs.frequencyType || "");
+    if (!["day", "week"].includes(frequencyType)) validationErrors.push("Frequency type: day or week");
 
-    // Validate frequency_value: integer 1-500
     const frequencyValue = validateInteger(inputs.frequencyValue, 1, 500);
-    if (frequencyValue === null) {
-      validationErrors.push("Frequency value must be an integer between 1 and 500");
-    }
+    if (frequencyValue === null) validationErrors.push("Frequency value: 1-500");
 
-    // Validate working_days_per_week: integer 1-7
     const workingDays = validateInteger(inputs.workingDays, 1, 7);
-    if (workingDays === null) {
-      validationErrors.push("Working days must be an integer between 1 and 7");
-    }
+    if (workingDays === null) validationErrors.push("Working days: 1-7");
 
-    // Validate hourly_cost_eur: number 10-300
     const hourlyCost = validateNumber(inputs.hourlyCost, 10, 300);
-    if (hourlyCost === null) {
-      validationErrors.push("Hourly cost must be a number between 10 and 300 EUR");
-    }
+    if (hourlyCost === null) validationErrors.push("Hourly cost: 10-300 EUR");
 
-    // Validate automation_potential_percent: integer 0-90
     const automationPotential = validateInteger(inputs.automationPotential, 0, 90);
-    if (automationPotential === null) {
-      validationErrors.push("Automation potential must be an integer between 0 and 90%");
-    }
+    if (automationPotential === null) validationErrors.push("Automation potential: 0-90%");
 
-    // Return all validation errors at once
     if (validationErrors.length > 0) {
-      console.log(`[send-report] Validation errors: ${validationErrors.join(', ')}`);
-      return new Response(
-        JSON.stringify({ error: "Invalid input data", details: validationErrors }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      return new Response(JSON.stringify({ error: "Invalid input data", details: validationErrors }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    // ==========================================
-    // RECOMPUTE ALL OUTPUTS SERVER-SIDE
-    // (Do not trust client-provided results)
-    // ==========================================
-    const annualRuns = frequencyType === "day"
-      ? frequencyValue! * workingDays! * 52
-      : frequencyValue! * 52;
-    
+    // ========== COMPUTE RESULTS SERVER-SIDE ==========
+    const annualRuns = frequencyType === "day" ? frequencyValue! * workingDays! * 52 : frequencyValue! * 52;
     const annualMinutes = teamSize! * timePerTask! * annualRuns;
     const annualHours = annualMinutes / 60;
     const annualCost = annualHours * hourlyCost!;
     const potentialSavingsHours = annualHours * (automationPotential! / 100);
     const potentialSavingsCost = annualCost * (automationPotential! / 100);
 
-    console.log(`[send-report] Computed results: annualHours=${annualHours.toFixed(2)}, annualCost=${annualCost.toFixed(2)}`);
+    console.log(`[send-report] Computed: ${annualHours.toFixed(1)}h, ${formatCurrency(annualCost)}`);
 
-    // Use validated inputs for the email
-    const validatedInputs = {
-      teamSize: teamSize!,
-      timePerTask: timePerTask!,
-      frequencyType: frequencyType as "day" | "week",
-      frequencyValue: frequencyValue!,
-      workingDays: workingDays!,
-      hourlyCost: hourlyCost!,
-      automationPotential: automationPotential!,
-    };
+    const frequencyLabel = frequencyType === "day" ? "Fois par jour" : "Fois par semaine";
 
-    const computedResults = {
-      annualHours,
-      annualCost,
-      potentialSavingsHours,
-      potentialSavingsCost,
-    };
-
-    const frequencyLabel = validatedInputs.frequencyType === "day" ? "Fois par jour" : "Fois par semaine";
-
+    // ========== BUILD EMAIL HTML ==========
     const emailHtml = `
 <!DOCTYPE html>
 <html>
@@ -419,27 +333,27 @@ const handler = async (req: Request): Promise<Response> => {
     <h2>📊 Vos entrées</h2>
     <div class="data-row">
       <span class="data-label">Taille de l'équipe concernée</span>
-      <span class="data-value">${validatedInputs.teamSize} personnes</span>
+      <span class="data-value">${teamSize} personnes</span>
     </div>
     <div class="data-row">
       <span class="data-label">Temps par tâche</span>
-      <span class="data-value">${validatedInputs.timePerTask} minutes</span>
+      <span class="data-value">${timePerTask} minutes</span>
     </div>
     <div class="data-row">
       <span class="data-label">Fréquence</span>
-      <span class="data-value">${frequencyLabel} : ${validatedInputs.frequencyValue}</span>
+      <span class="data-value">${frequencyLabel} : ${frequencyValue}</span>
     </div>
     <div class="data-row">
       <span class="data-label">Jours de travail par semaine</span>
-      <span class="data-value">${validatedInputs.workingDays} jours</span>
+      <span class="data-value">${workingDays} jours</span>
     </div>
     <div class="data-row">
       <span class="data-label">Coût horaire moyen chargé</span>
-      <span class="data-value">${formatCurrency(validatedInputs.hourlyCost)}</span>
+      <span class="data-value">${formatCurrency(hourlyCost!)}</span>
     </div>
     <div class="data-row">
       <span class="data-label">Potentiel d'automatisation</span>
-      <span class="data-value">${validatedInputs.automationPotential}%</span>
+      <span class="data-value">${automationPotential}%</span>
     </div>
   </div>
 
@@ -447,24 +361,24 @@ const handler = async (req: Request): Promise<Response> => {
     <h2>🚨 Résultats</h2>
     <div class="result-item">
       <div class="result-label">Heures perdues par an</div>
-      <div class="result-value">${formatNumber(computedResults.annualHours)} heures</div>
+      <div class="result-value">${formatNumber(annualHours)} heures</div>
     </div>
     <div class="result-item">
       <div class="result-label">Perte annuelle</div>
-      <div class="result-value">${formatCurrency(computedResults.annualCost)}</div>
+      <div class="result-value">${formatCurrency(annualCost)}</div>
     </div>
   </div>
 
   <div class="savings-box">
-    <h2>💡 Économies potentielles (${validatedInputs.automationPotential}% automatisation)</h2>
+    <h2>💡 Économies potentielles (${automationPotential}% automatisation)</h2>
     <div class="savings-grid">
       <div class="savings-item">
         <div class="label">Heures économisées</div>
-        <div class="value">${formatNumber(computedResults.potentialSavingsHours)}</div>
+        <div class="value">${formatNumber(potentialSavingsHours)}</div>
       </div>
       <div class="savings-item">
         <div class="label">Euros économisés</div>
-        <div class="value">${formatCurrency(computedResults.potentialSavingsCost)}</div>
+        <div class="value">${formatCurrency(potentialSavingsCost)}</div>
       </div>
     </div>
   </div>
@@ -472,18 +386,18 @@ const handler = async (req: Request): Promise<Response> => {
   <div class="math-section">
     <h2>🧮 Transparence des calculs</h2>
     <p><strong>Formule exécutions annuelles :</strong><br>
-    ${validatedInputs.frequencyType === "day" 
-      ? `<code>${validatedInputs.frequencyValue} × ${validatedInputs.workingDays} jours × 52 semaines = ${formatNumber(annualRuns)}</code>`
-      : `<code>${validatedInputs.frequencyValue} × 52 semaines = ${formatNumber(annualRuns)}</code>`
+    ${frequencyType === "day"
+      ? `<code>${frequencyValue} × ${workingDays} jours × 52 semaines = ${formatNumber(annualRuns)}</code>`
+      : `<code>${frequencyValue} × 52 semaines = ${formatNumber(annualRuns)}</code>`
     }</p>
     <p><strong>Minutes annuelles :</strong><br>
-    <code>${validatedInputs.teamSize} personnes × ${validatedInputs.timePerTask} min × ${formatNumber(annualRuns)} exécutions = ${formatNumber(annualMinutes)} min</code></p>
+    <code>${teamSize} personnes × ${timePerTask} min × ${formatNumber(annualRuns)} exécutions = ${formatNumber(annualMinutes)} min</code></p>
     <p><strong>Heures annuelles :</strong><br>
-    <code>${formatNumber(annualMinutes)} min ÷ 60 = ${formatNumber(computedResults.annualHours)} heures</code></p>
+    <code>${formatNumber(annualMinutes)} min ÷ 60 = ${formatNumber(annualHours)} heures</code></p>
     <p><strong>Coût annuel :</strong><br>
-    <code>${formatNumber(computedResults.annualHours)} heures × ${validatedInputs.hourlyCost}€ = ${formatCurrency(computedResults.annualCost)}</code></p>
+    <code>${formatNumber(annualHours)} heures × ${hourlyCost}€ = ${formatCurrency(annualCost)}</code></p>
     <p><strong>Économies potentielles :</strong><br>
-    <code>${formatCurrency(computedResults.annualCost)} × ${validatedInputs.automationPotential}% = ${formatCurrency(computedResults.potentialSavingsCost)}</code></p>
+    <code>${formatCurrency(annualCost)} × ${automationPotential}% = ${formatCurrency(potentialSavingsCost)}</code></p>
   </div>
 
   <div class="cta-box">
@@ -500,47 +414,44 @@ const handler = async (req: Request): Promise<Response> => {
 </html>
     `;
 
-    // Send email via Brevo
-    console.log(`[send-report] Sending email to: ${RECIPIENT_EMAIL}, reply-to: ${sanitizedEmail}`);
-    
+    // ========== SEND EMAIL VIA BREVO ==========
+    console.log(`[send-report] Sending email to: ${RECIPIENT_EMAIL}`);
+
     const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
         "api-key": BREVO_API_KEY,
       },
       body: JSON.stringify({
-        sender: {
-          name: BREVO_SENDER_NAME,
-          email: BREVO_SENDER_EMAIL,
-        },
+        sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
         to: [{ email: RECIPIENT_EMAIL }],
         replyTo: { email: sanitizedEmail },
-        subject: `ROI Leak Report — ${formatCurrency(computedResults.annualCost)}/an perdu — ${formatNumber(computedResults.annualHours)}h/an`,
+        subject: `ROI Leak Report — ${formatCurrency(annualCost)}/an perdu — ${formatNumber(annualHours)}h/an`,
         htmlContent: emailHtml,
       }),
     });
 
     if (!brevoResponse.ok) {
-      const errorData = await brevoResponse.text();
-      console.error("[send-report] Brevo API error:", errorData);
-      throw new Error(`Failed to send email: ${brevoResponse.status}`);
+      const errorText = await brevoResponse.text();
+      console.error("[send-report] Brevo error:", errorText);
+      throw new Error(`Email service error: ${brevoResponse.status}`);
     }
 
-    const responseData = await brevoResponse.json();
-    console.log("[send-report] Email sent successfully:", responseData);
+    const brevoData = await brevoResponse.json();
+    console.log("[send-report] Email sent:", brevoData);
 
-    return new Response(
-      JSON.stringify({ success: true, messageId: responseData.messageId }),
-      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return new Response(JSON.stringify({ success: true, messageId: brevoData.messageId }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   } catch (error: any) {
     console.error("[send-report] Error:", error);
-    return new Response(
-      JSON.stringify({ error: error.message || "Failed to send report" }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    return new Response(JSON.stringify({ error: error.message || "Failed to send report" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 
