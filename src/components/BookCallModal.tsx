@@ -112,19 +112,22 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
           </p>
         </div>
 
-        {/* iClosed Widget Container */}
-        <div className="p-6 pt-4">
-          <div
-            className="iclosed-widget rounded-xl overflow-hidden"
-            data-url={ICLOSED_WIDGET_URL}
-            title="🎁 Audit offert — 30 minutes"
-            style={{
-              width: "100%",
-              height: "620px",
-              minHeight: "400px",
-            }}
-          />
-        </div>
+        {/* iClosed Widget - No wrapper, direct placement */}
+        <div
+          className="iclosed-widget"
+          data-url={ICLOSED_WIDGET_URL}
+          title="🎁 Audit offert — 30 minutes"
+          style={{
+            width: "100%",
+            height: "620px",
+            background: "transparent",
+            border: "none",
+            boxShadow: "none",
+            borderRadius: 0,
+            padding: 0,
+            margin: 0,
+          }}
+        />
       </div>
     </div>
   );
