@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
+const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
 const BREVO_SENDER_EMAIL = "contact@xplorex.io";
 const BREVO_SENDER_NAME = "ROI Leak Calculator";
 const RECIPIENT_EMAIL = "contact@xplorex.io";
@@ -9,7 +10,7 @@ const ICLOSED_BOOKING_LINK = "https://app.iclosed.io/e/raphaelgenin/audit-offert
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_REQUESTS_PER_WINDOW = 3;
-const MIN_REQUEST_INTERVAL_MS = 10 * 1000; // 10 seconds between requests
+const MIN_REQUEST_INTERVAL_MS = 30 * 1000; // 30 seconds between requests (cooldown)
 
 // In-memory rate limiting store (per IP)
 const rateLimitStore = new Map<string, { count: number; windowStart: number; lastRequest: number }>();
@@ -21,6 +22,7 @@ const corsHeaders = {
 
 interface ReportRequest {
   email: string;
+  turnstileToken?: string;
   inputs: {
     teamSize: number;
     timePerTask: number;
@@ -38,6 +40,45 @@ interface ReportRequest {
   };
 }
 
+// Verify Cloudflare Turnstile token
+const verifyTurnstileToken = async (token: string, ip: string): Promise<{ success: boolean; error?: string }> => {
+  if (!TURNSTILE_SECRET_KEY) {
+    console.warn("[send-report] TURNSTILE_SECRET_KEY not configured, skipping verification");
+    return { success: true }; // Allow if not configured (for development)
+  }
+
+  try {
+    const formData = new URLSearchParams();
+    formData.append('secret', TURNSTILE_SECRET_KEY);
+    formData.append('response', token);
+    formData.append('remoteip', ip);
+
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData.toString(),
+    });
+
+    const result = await response.json();
+    console.log("[send-report] Turnstile verification result:", JSON.stringify(result));
+
+    if (result.success) {
+      return { success: true };
+    } else {
+      const errorCodes = result['error-codes'] || [];
+      return { 
+        success: false, 
+        error: `Bot verification failed: ${errorCodes.join(', ') || 'invalid token'}` 
+      };
+    }
+  } catch (error) {
+    console.error("[send-report] Turnstile verification error:", error);
+    return { success: false, error: "Bot verification service unavailable" };
+  }
+};
+
 // Sanitize string input - remove HTML tags and trim
 const sanitizeString = (input: string): string => {
   if (typeof input !== 'string') return '';
@@ -46,7 +87,7 @@ const sanitizeString = (input: string): string => {
     .replace(/&[^;]+;/g, '') // Remove HTML entities
     .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
     .trim()
-    .slice(0, 255); // Limit length
+    .slice(0, 200); // Limit length to 200 chars
 };
 
 // Validate and sanitize number input
@@ -75,6 +116,10 @@ const getClientIP = (req: Request): string => {
   const realIP = req.headers.get('x-real-ip');
   if (realIP) {
     return realIP;
+  }
+  const cfConnectingIP = req.headers.get('cf-connecting-ip');
+  if (cfConnectingIP) {
+    return cfConnectingIP;
   }
   // Fallback to a generic identifier
   return 'unknown';
@@ -107,23 +152,24 @@ const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number; re
     return { allowed: true };
   }
 
-  // Check cooldown between requests
+  // Check cooldown between requests (30 seconds)
   if (now - record.lastRequest < MIN_REQUEST_INTERVAL_MS) {
     const retryAfter = Math.ceil((MIN_REQUEST_INTERVAL_MS - (now - record.lastRequest)) / 1000);
     return { 
       allowed: false, 
       retryAfter, 
-      reason: `Too many requests. Please wait ${retryAfter} seconds.` 
+      reason: `Please wait ${retryAfter} seconds before sending another report.` 
     };
   }
 
-  // Check max requests per window
+  // Check max requests per window (3 per hour)
   if (record.count >= MAX_REQUESTS_PER_WINDOW) {
     const retryAfter = Math.ceil((record.windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000);
+    const minutesRemaining = Math.ceil(retryAfter / 60);
     return { 
       allowed: false, 
       retryAfter, 
-      reason: `Rate limit exceeded. Maximum ${MAX_REQUESTS_PER_WINDOW} reports per hour.` 
+      reason: `Rate limit exceeded. Maximum ${MAX_REQUESTS_PER_WINDOW} reports per hour. Try again in ${minutesRemaining} minutes.` 
     };
   }
 
@@ -157,7 +203,9 @@ const handler = async (req: Request): Promise<Response> => {
   console.log(`[send-report] Request from IP: ${clientIP}`);
 
   try {
-    // Check rate limit first
+    // ==========================================
+    // CHECK RATE LIMIT FIRST
+    // ==========================================
     const rateLimitResult = checkRateLimit(clientIP);
     if (!rateLimitResult.allowed) {
       console.log(`[send-report] Rate limited IP: ${clientIP}, reason: ${rateLimitResult.reason}`);
@@ -189,17 +237,39 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { email, inputs } = requestBody;
+    const { email, turnstileToken, inputs } = requestBody;
+
+    // ==========================================
+    // VERIFY TURNSTILE TOKEN (BOT PROTECTION)
+    // ==========================================
+    if (!turnstileToken) {
+      console.log(`[send-report] Missing Turnstile token from IP: ${clientIP}`);
+      return new Response(
+        JSON.stringify({ error: "Bot verification required. Please complete the security check." }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const turnstileResult = await verifyTurnstileToken(turnstileToken, clientIP);
+    if (!turnstileResult.success) {
+      console.log(`[send-report] Turnstile verification failed for IP: ${clientIP}, error: ${turnstileResult.error}`);
+      return new Response(
+        JSON.stringify({ error: turnstileResult.error || "Bot verification failed. Please try again." }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log(`[send-report] Turnstile verification passed for IP: ${clientIP}`);
 
     // ==========================================
     // VALIDATE EMAIL
     // ==========================================
     const sanitizedEmail = sanitizeString(email || '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!sanitizedEmail || !emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 255) {
+    if (!sanitizedEmail || !emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 200) {
       console.log(`[send-report] Invalid email: ${sanitizedEmail}`);
       return new Response(
-        JSON.stringify({ error: "Invalid email address" }),
+        JSON.stringify({ error: "Invalid email address (max 200 characters)" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
