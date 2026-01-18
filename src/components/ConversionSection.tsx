@@ -124,7 +124,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     try {
       const { data, error } = await supabase.functions.invoke("send-report", {
         body: {
-          email,
+          email: email.trim(),
           inputs,
           results,
         },
@@ -132,10 +132,18 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
 
       if (error) {
         console.error("Edge function error:", error);
+        // Handle rate limit errors specifically
+        if (error.message?.includes("429") || error.message?.includes("Rate limit")) {
+          throw new Error("Limite d'envois atteinte. Veuillez réessayer dans une heure.");
+        }
         throw new Error(error.message || "Failed to send report");
       }
 
       if (data?.error) {
+        // Handle specific validation errors
+        if (data.details && Array.isArray(data.details)) {
+          throw new Error(`Données invalides : ${data.details.join(", ")}`);
+        }
         throw new Error(data.error);
       }
 
@@ -145,7 +153,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       // Store in localStorage for history
       const submissions = JSON.parse(localStorage.getItem("reportSubmissions") || "[]");
       submissions.push({
-        email,
+        email: email.trim(),
         results,
         inputs,
         submittedAt: new Date().toISOString(),
@@ -161,15 +169,32 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       navigate("/thank-you", {
         state: {
           type: "report",
-          email,
+          email: email.trim(),
           results,
         },
       });
     } catch (error: any) {
       console.error("Error sending report:", error);
+      
+      // Format user-friendly error messages
+      let errorMessage = "Une erreur est survenue. Veuillez réessayer.";
+      if (error.message) {
+        if (error.message.includes("Limite") || error.message.includes("Rate limit")) {
+          errorMessage = error.message;
+        } else if (error.message.includes("Données invalides")) {
+          errorMessage = error.message;
+        } else if (error.message.includes("Invalid email")) {
+          errorMessage = "Adresse email invalide.";
+        } else if (error.message.includes("Invalid input")) {
+          errorMessage = "Données du calculateur invalides. Veuillez vérifier vos entrées.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         title: "Erreur d'envoi",
-        description: error.message || "Une erreur est survenue. Veuillez réessayer.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
