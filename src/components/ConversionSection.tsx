@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { Mail, ArrowRight, Calendar, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Mail, ArrowRight, Calendar, Loader2, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import TurnstileWidget from "./TurnstileWidget";
 
 interface CalculatorInputs {
   teamSize: number;
@@ -40,7 +41,7 @@ const formatNumber = (value: number): string => {
   return new Intl.NumberFormat("fr-FR").format(Math.round(value));
 };
 
-// Rate limiting: max 3 sends per hour
+// Rate limiting: max 3 sends per hour (client-side backup)
 const RATE_LIMIT_KEY = "report_send_timestamps";
 const MAX_SENDS_PER_HOUR = 3;
 
@@ -65,7 +66,23 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+    setTurnstileError(false);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileToken(null);
+    setTurnstileError(true);
+  };
+
+  const handleTurnstileExpire = () => {
+    setTurnstileToken(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,16 +108,26 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     }
 
     // Email length validation
-    if (email.length > 255) {
+    if (email.length > 200) {
       toast({
         title: "Email trop long",
-        description: "L'adresse email ne peut pas dépasser 255 caractères.",
+        description: "L'adresse email ne peut pas dépasser 200 caractères.",
         variant: "destructive",
       });
       return;
     }
 
-    // Check rate limit
+    // Check Turnstile verification
+    if (!turnstileToken) {
+      toast({
+        title: "Vérification requise",
+        description: "Veuillez compléter la vérification de sécurité.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check client-side rate limit (backup)
     if (!checkRateLimit()) {
       toast({
         title: "Limite atteinte",
@@ -125,6 +152,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       const { data, error } = await supabase.functions.invoke("send-report", {
         body: {
           email: email.trim(),
+          turnstileToken,
           inputs,
           results,
         },
@@ -132,9 +160,12 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
 
       if (error) {
         console.error("Edge function error:", error);
-        // Handle rate limit errors specifically
-        if (error.message?.includes("429") || error.message?.includes("Rate limit")) {
-          throw new Error("Limite d'envois atteinte. Veuillez réessayer dans une heure.");
+        // Handle specific error codes
+        if (error.message?.includes("429") || error.message?.includes("Rate limit") || error.message?.includes("Please wait")) {
+          throw new Error("Limite d'envois atteinte. Veuillez réessayer plus tard.");
+        }
+        if (error.message?.includes("403") || error.message?.includes("Bot verification")) {
+          throw new Error("Vérification de sécurité échouée. Veuillez rafraîchir la page et réessayer.");
         }
         throw new Error(error.message || "Failed to send report");
       }
@@ -143,6 +174,10 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
         // Handle specific validation errors
         if (data.details && Array.isArray(data.details)) {
           throw new Error(`Données invalides : ${data.details.join(", ")}`);
+        }
+        // Handle bot verification errors
+        if (data.error.includes("Bot verification") || data.error.includes("security check")) {
+          throw new Error("Vérification de sécurité échouée. Veuillez rafraîchir la page et réessayer.");
         }
         throw new Error(data.error);
       }
@@ -176,10 +211,15 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     } catch (error: any) {
       console.error("Error sending report:", error);
       
+      // Reset turnstile token on error to require re-verification
+      setTurnstileToken(null);
+      
       // Format user-friendly error messages
       let errorMessage = "Une erreur est survenue. Veuillez réessayer.";
       if (error.message) {
-        if (error.message.includes("Limite") || error.message.includes("Rate limit")) {
+        if (error.message.includes("Limite") || error.message.includes("Rate limit") || error.message.includes("Please wait")) {
+          errorMessage = error.message;
+        } else if (error.message.includes("Vérification") || error.message.includes("verification")) {
           errorMessage = error.message;
         } else if (error.message.includes("Données invalides")) {
           errorMessage = error.message;
@@ -229,25 +269,48 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
                 </div>
               )}
 
-              <form ref={formRef} onSubmit={handleSubmit} className="flex gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="vous@entreprise.com"
-                  className="input-field flex-1"
-                  maxLength={255}
-                  disabled={isSubmitting}
-                />
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex gap-3">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="vous@entreprise.com"
+                    className="input-field flex-1"
+                    maxLength={200}
+                    disabled={isSubmitting}
+                  />
+                </div>
+                
+                {/* Turnstile Widget */}
+                <div className="flex flex-col items-center">
+                  <TurnstileWidget
+                    onVerify={handleTurnstileVerify}
+                    onError={handleTurnstileError}
+                    onExpire={handleTurnstileExpire}
+                  />
+                  {turnstileToken && (
+                    <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                      <ShieldCheck className="w-3 h-3" />
+                      <span>Vérifié</span>
+                    </div>
+                  )}
+                  {turnstileError && (
+                    <p className="text-xs text-destructive mt-1">
+                      Erreur de vérification. Veuillez rafraîchir la page.
+                    </p>
+                  )}
+                </div>
+
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary whitespace-nowrap disabled:opacity-50 flex items-center gap-2"
+                  disabled={isSubmitting || !turnstileToken}
+                  className="btn-primary w-full disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Envoi...
+                      Envoi en cours...
                     </>
                   ) : (
                     "Envoyer mon rapport"
