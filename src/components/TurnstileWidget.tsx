@@ -15,7 +15,7 @@ import { Loader2, AlertTriangle, ShieldCheck } from "lucide-react";
 
 // PRODUCTION SITE KEY - Replace with your Cloudflare Turnstile Site Key
 // This key must be configured for your published domain in Cloudflare Dashboard
-const TURNSTILE_SITE_KEY = "0x4AAAAAABeB-kXvXpFn31fB";
+const TURNSTILE_SITE_KEY = "0x4AAAAAACNQAJakize4fWyt";
 
 export type TurnstileStatus = "loading" | "ready" | "verified" | "error" | "expired" | "unavailable";
 
