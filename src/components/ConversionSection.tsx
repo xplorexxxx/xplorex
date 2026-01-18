@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from "react";
-import { Mail, ArrowRight, Calendar, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
+import { Mail, ArrowRight, Calendar, Loader2, ShieldCheck, AlertCircle, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -93,18 +93,29 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
   const emailValidation = useMemo(() => validateEmail(email), [email]);
   const showEmailError = emailTouched && email.trim() !== "" && !emailValidation.valid;
 
-  // Button enable logic
-  const isButtonEnabled = emailValidation.valid && turnstileToken !== null && !isSubmitting;
+  // Button enable logic: 
+  // - Email must be valid
+  // - Either have a turnstile token OR turnstile is unavailable (fallback to server-side rate limiting)
+  // - Not currently submitting
+  const turnstileReady = turnstileToken !== null || turnstileStatus === "unavailable";
+  const isButtonEnabled = emailValidation.valid && turnstileReady && !isSubmitting;
 
   const handleTurnstileVerify = (token: string) => {
+    console.log("[Form] Turnstile token received");
     setTurnstileToken(token);
   };
 
   const handleTurnstileStatusChange = (status: TurnstileStatus) => {
+    console.log("[Form] Turnstile status changed:", status);
     setTurnstileStatus(status);
     if (status === "error" || status === "expired") {
       setTurnstileToken(null);
     }
+  };
+
+  const handleTurnstileUnavailable = () => {
+    console.log("[Form] Turnstile unavailable, allowing submission with server-side protection only");
+    // We allow submission without turnstile token, server will rely on rate limiting
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +131,13 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     setSubmitAttempted(true);
     setEmailTouched(true);
 
+    console.log("[Form] Submit clicked", { 
+      email: email.trim(), 
+      emailValid: emailValidation.valid,
+      turnstileToken: !!turnstileToken,
+      turnstileStatus
+    });
+
     if (!emailValidation.valid) {
       toast({
         title: "Email invalide",
@@ -129,18 +147,24 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       return;
     }
 
-    // Check Turnstile verification
-    if (!turnstileToken) {
+    // Check Turnstile verification - but allow if unavailable
+    if (!turnstileToken && turnstileStatus !== "unavailable") {
       if (turnstileStatus === "error") {
         toast({
           title: "Vérification anti-spam échouée",
           description: "Veuillez rafraîchir la page et réessayer.",
           variant: "destructive",
         });
-      } else {
+      } else if (turnstileStatus === "loading") {
         toast({
           title: "Vérification en cours",
           description: "Veuillez patienter pendant la vérification de sécurité.",
+          variant: "destructive",
+        });
+      } else if (turnstileStatus === "expired") {
+        toast({
+          title: "Vérification expirée",
+          description: "Veuillez rafraîchir la page et réessayer.",
           variant: "destructive",
         });
       }
@@ -167,16 +191,22 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     }
 
     setIsSubmitting(true);
+    console.log("[Form] Sending report...");
 
     try {
+      const requestBody = {
+        email: email.trim(),
+        turnstileToken: turnstileToken || null, // Can be null if unavailable
+        inputs,
+        results,
+      };
+      console.log("[Form] Request body:", { ...requestBody, turnstileToken: !!requestBody.turnstileToken });
+
       const { data, error } = await supabase.functions.invoke("send-report", {
-        body: {
-          email: email.trim(),
-          turnstileToken,
-          inputs,
-          results,
-        },
+        body: requestBody,
       });
+
+      console.log("[Form] Response:", { data, error });
 
       if (error) {
         console.error("Edge function error:", error);
@@ -216,6 +246,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       });
       localStorage.setItem("reportSubmissions", JSON.stringify(submissions));
 
+      console.log("[Form] Report sent successfully!");
       toast({
         title: "Rapport envoyé !",
         description: "Nous vous répondrons dans les 24 heures.",
@@ -247,6 +278,8 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
           errorMessage = "Adresse email invalide.";
         } else if (error.message.includes("Invalid input")) {
           errorMessage = "Données du calculateur invalides. Veuillez vérifier vos entrées.";
+        } else if (error.message.includes("network") || error.message.includes("Network") || error.message.includes("fetch")) {
+          errorMessage = "Erreur réseau. Veuillez vérifier votre connexion et réessayer.";
         }
       }
       
@@ -270,6 +303,14 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
         <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
           <ShieldCheck className="w-3 h-3" />
           <span>Vérifié</span>
+        </div>
+      );
+    }
+    if (turnstileStatus === "unavailable") {
+      return (
+        <div className="flex items-center gap-1 text-xs text-amber-600 mt-1">
+          <AlertTriangle className="w-3 h-3" />
+          <span>Protection par limite de requêtes</span>
         </div>
       );
     }
@@ -351,6 +392,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
                   <TurnstileWidget
                     onVerify={handleTurnstileVerify}
                     onStatusChange={handleTurnstileStatusChange}
+                    onUnavailable={handleTurnstileUnavailable}
                   />
                   {getStatusMessage()}
                 </div>
