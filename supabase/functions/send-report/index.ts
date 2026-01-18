@@ -242,24 +242,21 @@ const handler = async (req: Request): Promise<Response> => {
     // ==========================================
     // VERIFY TURNSTILE TOKEN (BOT PROTECTION)
     // ==========================================
-    if (!turnstileToken) {
-      console.log(`[send-report] Missing Turnstile token from IP: ${clientIP}`);
-      return new Response(
-        JSON.stringify({ error: "Bot verification required. Please complete the security check." }),
-        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+    // Turnstile token is optional - if not provided, we rely on rate limiting
+    // This allows the form to work even if Turnstile fails to load (e.g., domain not configured)
+    if (turnstileToken) {
+      const turnstileResult = await verifyTurnstileToken(turnstileToken, clientIP);
+      if (!turnstileResult.success) {
+        console.log(`[send-report] Turnstile verification failed for IP: ${clientIP}, error: ${turnstileResult.error}`);
+        return new Response(
+          JSON.stringify({ error: turnstileResult.error || "Bot verification failed. Please try again." }),
+          { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+      console.log(`[send-report] Turnstile verification passed for IP: ${clientIP}`);
+    } else {
+      console.log(`[send-report] No Turnstile token provided from IP: ${clientIP}, relying on rate limiting`);
     }
-
-    const turnstileResult = await verifyTurnstileToken(turnstileToken, clientIP);
-    if (!turnstileResult.success) {
-      console.log(`[send-report] Turnstile verification failed for IP: ${clientIP}, error: ${turnstileResult.error}`);
-      return new Response(
-        JSON.stringify({ error: turnstileResult.error || "Bot verification failed. Please try again." }),
-        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    console.log(`[send-report] Turnstile verification passed for IP: ${clientIP}`);
 
     // ==========================================
     // VALIDATE EMAIL
