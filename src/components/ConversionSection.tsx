@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
-import { Mail, ArrowRight, Calendar, Loader2, ShieldCheck } from "lucide-react";
+import { useState, useRef, useMemo } from "react";
+import { Mail, ArrowRight, Calendar, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import TurnstileWidget from "./TurnstileWidget";
+import TurnstileWidget, { TurnstileStatus } from "./TurnstileWidget";
 
 interface CalculatorInputs {
   teamSize: number;
@@ -62,56 +62,68 @@ const recordSend = () => {
   localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(recentTimestamps));
 };
 
+// Email validation
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const validateEmail = (email: string): { valid: boolean; message?: string } => {
+  const trimmed = email.trim();
+  if (!trimmed) {
+    return { valid: false };
+  }
+  if (trimmed.length > 200) {
+    return { valid: false, message: "Email trop long (max 200 caractères)" };
+  }
+  if (!EMAIL_REGEX.test(trimmed)) {
+    return { valid: false, message: "Format d'email invalide" };
+  }
+  return { valid: true };
+};
+
 const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSectionProps) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [turnstileError, setTurnstileError] = useState(false);
+  const [turnstileStatus, setTurnstileStatus] = useState<TurnstileStatus>("loading");
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Live email validation
+  const emailValidation = useMemo(() => validateEmail(email), [email]);
+  const showEmailError = emailTouched && email.trim() !== "" && !emailValidation.valid;
+
+  // Button enable logic
+  const isButtonEnabled = emailValidation.valid && turnstileToken !== null && !isSubmitting;
 
   const handleTurnstileVerify = (token: string) => {
     setTurnstileToken(token);
-    setTurnstileError(false);
   };
 
-  const handleTurnstileError = () => {
-    setTurnstileToken(null);
-    setTurnstileError(true);
+  const handleTurnstileStatusChange = (status: TurnstileStatus) => {
+    setTurnstileStatus(status);
+    if (status === "error" || status === "expired") {
+      setTurnstileToken(null);
+    }
   };
 
-  const handleTurnstileExpire = () => {
-    setTurnstileToken(null);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleEmailBlur = () => {
+    setEmailTouched(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitAttempted(true);
+    setEmailTouched(true);
 
-    if (!email.trim()) {
-      toast({
-        title: "Email requis",
-        description: "Veuillez entrer votre email pour recevoir le rapport.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailValidation.valid) {
       toast({
         title: "Email invalide",
-        description: "Veuillez entrer une adresse email valide.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Email length validation
-    if (email.length > 200) {
-      toast({
-        title: "Email trop long",
-        description: "L'adresse email ne peut pas dépasser 200 caractères.",
+        description: emailValidation.message || "Veuillez entrer une adresse email valide.",
         variant: "destructive",
       });
       return;
@@ -119,11 +131,19 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
 
     // Check Turnstile verification
     if (!turnstileToken) {
-      toast({
-        title: "Vérification requise",
-        description: "Veuillez compléter la vérification de sécurité.",
-        variant: "destructive",
-      });
+      if (turnstileStatus === "error") {
+        toast({
+          title: "Vérification anti-spam échouée",
+          description: "Veuillez rafraîchir la page et réessayer.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Vérification en cours",
+          description: "Veuillez patienter pendant la vérification de sécurité.",
+          variant: "destructive",
+        });
+      }
       return;
     }
 
@@ -215,7 +235,7 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
       setTurnstileToken(null);
       
       // Format user-friendly error messages
-      let errorMessage = "Une erreur est survenue. Veuillez réessayer.";
+      let errorMessage = "Impossible d'envoyer le rapport. Veuillez réessayer.";
       if (error.message) {
         if (error.message.includes("Limite") || error.message.includes("Rate limit") || error.message.includes("Please wait")) {
           errorMessage = error.message;
@@ -227,8 +247,6 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
           errorMessage = "Adresse email invalide.";
         } else if (error.message.includes("Invalid input")) {
           errorMessage = "Données du calculateur invalides. Veuillez vérifier vos entrées.";
-        } else {
-          errorMessage = error.message;
         }
       }
       
@@ -240,6 +258,38 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Determine what status message to show
+  const getStatusMessage = () => {
+    if (turnstileStatus === "loading") {
+      return null; // Loading state is shown in the widget itself
+    }
+    if (turnstileStatus === "verified" && turnstileToken) {
+      return (
+        <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+          <ShieldCheck className="w-3 h-3" />
+          <span>Vérifié</span>
+        </div>
+      );
+    }
+    if (submitAttempted && turnstileStatus === "error") {
+      return (
+        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" />
+          Vérification échouée. Veuillez rafraîchir la page.
+        </p>
+      );
+    }
+    if (submitAttempted && turnstileStatus === "expired") {
+      return (
+        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" />
+          Vérification expirée. Veuillez recommencer.
+        </p>
+      );
+    }
+    return null;
   };
 
   return (
@@ -270,42 +320,45 @@ const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSecti
               )}
 
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-1">
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
+                    onBlur={handleEmailBlur}
                     placeholder="vous@entreprise.com"
-                    className="input-field flex-1"
+                    className={`input-field w-full ${showEmailError ? 'border-destructive focus:ring-destructive' : ''}`}
                     maxLength={200}
                     disabled={isSubmitting}
+                    aria-invalid={showEmailError}
+                    aria-describedby={showEmailError ? "email-error" : undefined}
                   />
+                  {showEmailError && emailValidation.message && (
+                    <p id="email-error" className="text-xs text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {emailValidation.message}
+                    </p>
+                  )}
+                  {!email.trim() && !emailTouched && (
+                    <p className="text-xs text-muted-foreground">
+                      Entrez votre email pour recevoir le rapport.
+                    </p>
+                  )}
                 </div>
                 
                 {/* Turnstile Widget */}
                 <div className="flex flex-col items-center">
                   <TurnstileWidget
                     onVerify={handleTurnstileVerify}
-                    onError={handleTurnstileError}
-                    onExpire={handleTurnstileExpire}
+                    onStatusChange={handleTurnstileStatusChange}
                   />
-                  {turnstileToken && (
-                    <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
-                      <ShieldCheck className="w-3 h-3" />
-                      <span>Vérifié</span>
-                    </div>
-                  )}
-                  {turnstileError && (
-                    <p className="text-xs text-destructive mt-1">
-                      Erreur de vérification. Veuillez rafraîchir la page.
-                    </p>
-                  )}
+                  {getStatusMessage()}
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || !turnstileToken}
-                  className="btn-primary w-full disabled:opacity-50 flex items-center justify-center gap-2"
+                  disabled={!isButtonEnabled}
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
