@@ -1,23 +1,21 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, ShieldCheck } from "lucide-react";
 
-// Cloudflare Turnstile Site Key - this is safe to be public
-// Get your own keys at: https://dash.cloudflare.com/?to=/:account/turnstile
-// IMPORTANT: You need to add your domain(s) to the Turnstile site key configuration
+/**
+ * PRODUCTION TURNSTILE CONFIGURATION
+ * 
+ * IMPORTANT: You MUST configure your Turnstile site key in Cloudflare Dashboard:
+ * https://dash.cloudflare.com/?to=/:account/turnstile
+ * 
+ * 1. Create a new Turnstile widget
+ * 2. Add your production domain(s): xplorex.lovable.app (and any custom domains)
+ * 3. Copy the Site Key here
+ * 4. Add the Secret Key to your Supabase secrets as TURNSTILE_SECRET_KEY
+ */
+
+// PRODUCTION SITE KEY - Replace with your Cloudflare Turnstile Site Key
+// This key must be configured for your published domain in Cloudflare Dashboard
 const TURNSTILE_SITE_KEY = "0x4AAAAAABeB-kXvXpFn31fB";
-
-// Cloudflare provides test keys for development:
-// Always passes: 1x00000000000000000000AA
-// Always fails: 2x00000000000000000000AB
-// Forces interactive challenge: 3x00000000000000000000FF
-const DEV_TURNSTILE_SITE_KEY = "1x00000000000000000000AA"; // Always passes for testing
-
-// Use dev key in development/preview environments
-const isDevEnvironment = window.location.hostname.includes('lovableproject.com') || 
-                         window.location.hostname.includes('lovable.app') ||
-                         window.location.hostname === 'localhost';
-
-const ACTIVE_SITE_KEY = isDevEnvironment ? DEV_TURNSTILE_SITE_KEY : TURNSTILE_SITE_KEY;
 
 export type TurnstileStatus = "loading" | "ready" | "verified" | "error" | "expired" | "unavailable";
 
@@ -44,17 +42,19 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const scriptLoadedRef = useRef(false);
+  const mountedRef = useRef(true);
   const retryCountRef = useRef(0);
   const maxRetries = 2;
   const [status, setStatus] = useState<TurnstileStatus>("loading");
 
   const updateStatus = useCallback((newStatus: TurnstileStatus) => {
+    if (!mountedRef.current) return;
     setStatus(newStatus);
     onStatusChange?.(newStatus);
   }, [onStatusChange]);
 
   const renderWidget = useCallback(() => {
-    if (!containerRef.current || !window.turnstile) {
+    if (!containerRef.current || !window.turnstile || !mountedRef.current) {
       console.log("[Turnstile] Container or API not ready");
       return;
     }
@@ -63,31 +63,33 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
     if (widgetIdRef.current) {
       try {
         window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
       } catch (e) {
         // Ignore errors from removing non-existent widget
       }
     }
 
-    console.log("[Turnstile] Rendering widget with key:", ACTIVE_SITE_KEY.substring(0, 10) + "...");
+    console.log("[Turnstile] Rendering widget with site key:", TURNSTILE_SITE_KEY.substring(0, 12) + "...");
     updateStatus("ready");
 
     // Render new widget
     try {
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: ACTIVE_SITE_KEY,
+        sitekey: TURNSTILE_SITE_KEY,
         callback: (token: string) => {
+          if (!mountedRef.current) return;
           console.log("[Turnstile] Verification successful, token received");
           updateStatus("verified");
           onVerify(token);
         },
-        "error-callback": (error: unknown) => {
-          console.error("[Turnstile] Verification error:", error);
+        "error-callback": (errorCode: unknown) => {
+          if (!mountedRef.current) return;
+          console.error("[Turnstile] Verification error code:", errorCode);
           retryCountRef.current++;
           
           if (retryCountRef.current <= maxRetries) {
             console.log(`[Turnstile] Retrying... (${retryCountRef.current}/${maxRetries})`);
-            // Retry after a short delay
-            setTimeout(() => renderWidget(), 1000);
+            setTimeout(() => renderWidget(), 1500);
           } else {
             console.log("[Turnstile] Max retries reached, marking as unavailable");
             updateStatus("unavailable");
@@ -96,13 +98,16 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
           }
         },
         "expired-callback": () => {
+          if (!mountedRef.current) return;
           console.log("[Turnstile] Token expired");
           updateStatus("expired");
           onExpire?.();
         },
         theme: "light",
         size: "normal",
+        appearance: "always",
       });
+      console.log("[Turnstile] Widget rendered with id:", widgetIdRef.current);
     } catch (e) {
       console.error("[Turnstile] Failed to render widget:", e);
       updateStatus("unavailable");
@@ -111,22 +116,29 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
   }, [onVerify, onError, onExpire, onUnavailable, updateStatus]);
 
   useEffect(() => {
-    // Check if script is already loaded
+    mountedRef.current = true;
+
+    // Check if Turnstile script is already loaded and API available
     if (window.turnstile) {
+      console.log("[Turnstile] API already loaded, rendering widget");
       renderWidget();
       return;
     }
 
-    // Check if script is already in DOM
+    // Check if script tag already exists
     const existingScript = document.querySelector('script[src*="turnstile"]');
-    if (existingScript && !scriptLoadedRef.current) {
-      // Wait for it to load
-      window.onTurnstileLoad = renderWidget;
+    if (existingScript) {
+      console.log("[Turnstile] Script tag exists, waiting for load");
+      window.onTurnstileLoad = () => {
+        if (mountedRef.current) renderWidget();
+      };
       return;
     }
 
     if (scriptLoadedRef.current) return;
     scriptLoadedRef.current = true;
+
+    console.log("[Turnstile] Loading script...");
 
     // Load the Turnstile script
     const script = document.createElement("script");
@@ -136,15 +148,21 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
 
     script.onerror = () => {
       console.error("[Turnstile] Failed to load script");
-      updateStatus("unavailable");
-      onUnavailable?.();
+      if (mountedRef.current) {
+        updateStatus("unavailable");
+        onUnavailable?.();
+      }
     };
 
-    window.onTurnstileLoad = renderWidget;
+    window.onTurnstileLoad = () => {
+      console.log("[Turnstile] Script loaded successfully");
+      if (mountedRef.current) renderWidget();
+    };
 
     document.head.appendChild(script);
 
     return () => {
+      mountedRef.current = false;
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
@@ -156,25 +174,31 @@ const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire, onUnavai
   }, [renderWidget, updateStatus, onUnavailable]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       {status === "loading" && (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground py-4">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground py-3">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span>Chargement de la vérification...</span>
         </div>
       )}
       {status === "unavailable" && (
-        <div className="flex items-center gap-2 text-xs text-amber-600 py-2">
-          <AlertTriangle className="w-4 h-4" />
-          <span>Vérification anti-spam indisponible</span>
+        <div className="flex items-center gap-2 text-xs text-amber-600 py-2 px-3 bg-amber-50 rounded-lg">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>Vérification indisponible — protection par limite de requêtes active</span>
+        </div>
+      )}
+      {status === "verified" && (
+        <div className="flex items-center gap-2 text-xs text-green-600 py-2 px-3 bg-green-50 rounded-lg">
+          <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+          <span>Vérification réussie</span>
         </div>
       )}
       <div 
         ref={containerRef} 
-        className="turnstile-container flex justify-center"
+        className="turnstile-container flex justify-center my-2"
         style={{ 
-          minHeight: status === "loading" || status === "unavailable" ? "0px" : "65px", 
-          display: status === "loading" || status === "unavailable" ? "none" : "flex" 
+          minHeight: (status === "loading" || status === "unavailable" || status === "verified") ? "0px" : "70px",
+          display: (status === "loading" || status === "unavailable" || status === "verified") ? "none" : "flex"
         }}
       />
     </div>
