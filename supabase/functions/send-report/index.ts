@@ -6,6 +6,14 @@ const BREVO_SENDER_NAME = "ROI Leak Calculator";
 const RECIPIENT_EMAIL = "contact@xplorex.io";
 const ICLOSED_BOOKING_LINK = "https://app.iclosed.io/e/raphaelgenin/audit-offert-30-minutes";
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const MAX_REQUESTS_PER_WINDOW = 3;
+const MIN_REQUEST_INTERVAL_MS = 10 * 1000; // 10 seconds between requests
+
+// In-memory rate limiting store (per IP)
+const rateLimitStore = new Map<string, { count: number; windowStart: number; lastRequest: number }>();
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -16,19 +24,115 @@ interface ReportRequest {
   inputs: {
     teamSize: number;
     timePerTask: number;
-    frequencyType: "day" | "week";
+    frequencyType: string;
     frequencyValue: number;
     workingDays: number;
     hourlyCost: number;
     automationPotential: number;
   };
-  results: {
+  results?: {
     annualHours: number;
     annualCost: number;
     potentialSavingsHours: number;
     potentialSavingsCost: number;
   };
 }
+
+// Sanitize string input - remove HTML tags and trim
+const sanitizeString = (input: string): string => {
+  if (typeof input !== 'string') return '';
+  return input
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/&[^;]+;/g, '') // Remove HTML entities
+    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .trim()
+    .slice(0, 255); // Limit length
+};
+
+// Validate and sanitize number input
+const validateNumber = (value: unknown, min: number, max: number): number | null => {
+  const num = Number(value);
+  if (isNaN(num) || !isFinite(num) || num < min || num > max) {
+    return null;
+  }
+  return num;
+};
+
+// Validate integer
+const validateInteger = (value: unknown, min: number, max: number): number | null => {
+  const num = validateNumber(value, min, max);
+  if (num === null) return null;
+  return Math.floor(num);
+};
+
+// Get client IP from request
+const getClientIP = (req: Request): string => {
+  // Check various headers for the real IP
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  const realIP = req.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+  // Fallback to a generic identifier
+  return 'unknown';
+};
+
+// Check rate limit for an IP
+const checkRateLimit = (ip: string): { allowed: boolean; retryAfter?: number; reason?: string } => {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip);
+
+  // Clean up old entries periodically
+  if (rateLimitStore.size > 1000) {
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (now - value.windowStart > RATE_LIMIT_WINDOW_MS * 2) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }
+
+  if (!record) {
+    // First request from this IP
+    rateLimitStore.set(ip, { count: 1, windowStart: now, lastRequest: now });
+    return { allowed: true };
+  }
+
+  // Check if window has expired
+  if (now - record.windowStart > RATE_LIMIT_WINDOW_MS) {
+    // Reset window
+    rateLimitStore.set(ip, { count: 1, windowStart: now, lastRequest: now });
+    return { allowed: true };
+  }
+
+  // Check cooldown between requests
+  if (now - record.lastRequest < MIN_REQUEST_INTERVAL_MS) {
+    const retryAfter = Math.ceil((MIN_REQUEST_INTERVAL_MS - (now - record.lastRequest)) / 1000);
+    return { 
+      allowed: false, 
+      retryAfter, 
+      reason: `Too many requests. Please wait ${retryAfter} seconds.` 
+    };
+  }
+
+  // Check max requests per window
+  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+    const retryAfter = Math.ceil((record.windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000);
+    return { 
+      allowed: false, 
+      retryAfter, 
+      reason: `Rate limit exceeded. Maximum ${MAX_REQUESTS_PER_WINDOW} reports per hour.` 
+    };
+  }
+
+  // Update record
+  record.count++;
+  record.lastRequest = now;
+  rateLimitStore.set(ip, record);
+  return { allowed: true };
+};
 
 const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat("fr-FR", {
@@ -49,38 +153,155 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+  console.log(`[send-report] Request from IP: ${clientIP}`);
+
   try {
+    // Check rate limit first
+    const rateLimitResult = checkRateLimit(clientIP);
+    if (!rateLimitResult.allowed) {
+      console.log(`[send-report] Rate limited IP: ${clientIP}, reason: ${rateLimitResult.reason}`);
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.reason }),
+        { 
+          status: 429, 
+          headers: { 
+            "Content-Type": "application/json", 
+            "Retry-After": String(rateLimitResult.retryAfter || 60),
+            ...corsHeaders 
+          } 
+        }
+      );
+    }
+
     if (!BREVO_API_KEY) {
-      console.error("BREVO_API_KEY is not set");
+      console.error("[send-report] BREVO_API_KEY is not set");
       throw new Error("Email service not configured");
     }
 
-    const { email, inputs, results }: ReportRequest = await req.json();
+    let requestBody: ReportRequest;
+    try {
+      requestBody = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON in request body" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
-    // Validate email
+    const { email, inputs } = requestBody;
+
+    // ==========================================
+    // VALIDATE EMAIL
+    // ==========================================
+    const sanitizedEmail = sanitizeString(email || '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
+    if (!sanitizedEmail || !emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 255) {
+      console.log(`[send-report] Invalid email: ${sanitizedEmail}`);
       return new Response(
         JSON.stringify({ error: "Invalid email address" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Validate inputs
-    if (!inputs || !results) {
+    // ==========================================
+    // VALIDATE ALL CALCULATOR INPUTS
+    // ==========================================
+    if (!inputs || typeof inputs !== 'object') {
       return new Response(
-        JSON.stringify({ error: "Missing calculator data" }),
+        JSON.stringify({ error: "Missing calculator inputs" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Calculate intermediate values for transparency
-    const annualRuns = inputs.frequencyType === "day"
-      ? inputs.frequencyValue * inputs.workingDays * 52
-      : inputs.frequencyValue * 52;
-    const annualMinutes = inputs.teamSize * inputs.timePerTask * annualRuns;
+    const validationErrors: string[] = [];
 
-    const frequencyLabel = inputs.frequencyType === "day" ? "Fois par jour" : "Fois par semaine";
+    // Validate team_size: integer 1-500
+    const teamSize = validateInteger(inputs.teamSize, 1, 500);
+    if (teamSize === null) {
+      validationErrors.push("Team size must be an integer between 1 and 500");
+    }
+
+    // Validate time_per_task_minutes: integer 1-240
+    const timePerTask = validateInteger(inputs.timePerTask, 1, 240);
+    if (timePerTask === null) {
+      validationErrors.push("Time per task must be an integer between 1 and 240 minutes");
+    }
+
+    // Validate frequency_type: enum ["day", "week"]
+    const frequencyType = String(inputs.frequencyType || '');
+    if (!['day', 'week'].includes(frequencyType)) {
+      validationErrors.push("Frequency type must be 'day' or 'week'");
+    }
+
+    // Validate frequency_value: integer 1-500
+    const frequencyValue = validateInteger(inputs.frequencyValue, 1, 500);
+    if (frequencyValue === null) {
+      validationErrors.push("Frequency value must be an integer between 1 and 500");
+    }
+
+    // Validate working_days_per_week: integer 1-7
+    const workingDays = validateInteger(inputs.workingDays, 1, 7);
+    if (workingDays === null) {
+      validationErrors.push("Working days must be an integer between 1 and 7");
+    }
+
+    // Validate hourly_cost_eur: number 10-300
+    const hourlyCost = validateNumber(inputs.hourlyCost, 10, 300);
+    if (hourlyCost === null) {
+      validationErrors.push("Hourly cost must be a number between 10 and 300 EUR");
+    }
+
+    // Validate automation_potential_percent: integer 0-90
+    const automationPotential = validateInteger(inputs.automationPotential, 0, 90);
+    if (automationPotential === null) {
+      validationErrors.push("Automation potential must be an integer between 0 and 90%");
+    }
+
+    // Return all validation errors at once
+    if (validationErrors.length > 0) {
+      console.log(`[send-report] Validation errors: ${validationErrors.join(', ')}`);
+      return new Response(
+        JSON.stringify({ error: "Invalid input data", details: validationErrors }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // ==========================================
+    // RECOMPUTE ALL OUTPUTS SERVER-SIDE
+    // (Do not trust client-provided results)
+    // ==========================================
+    const annualRuns = frequencyType === "day"
+      ? frequencyValue! * workingDays! * 52
+      : frequencyValue! * 52;
+    
+    const annualMinutes = teamSize! * timePerTask! * annualRuns;
+    const annualHours = annualMinutes / 60;
+    const annualCost = annualHours * hourlyCost!;
+    const potentialSavingsHours = annualHours * (automationPotential! / 100);
+    const potentialSavingsCost = annualCost * (automationPotential! / 100);
+
+    console.log(`[send-report] Computed results: annualHours=${annualHours.toFixed(2)}, annualCost=${annualCost.toFixed(2)}`);
+
+    // Use validated inputs for the email
+    const validatedInputs = {
+      teamSize: teamSize!,
+      timePerTask: timePerTask!,
+      frequencyType: frequencyType as "day" | "week",
+      frequencyValue: frequencyValue!,
+      workingDays: workingDays!,
+      hourlyCost: hourlyCost!,
+      automationPotential: automationPotential!,
+    };
+
+    const computedResults = {
+      annualHours,
+      annualCost,
+      potentialSavingsHours,
+      potentialSavingsCost,
+    };
+
+    const frequencyLabel = validatedInputs.frequencyType === "day" ? "Fois par jour" : "Fois par semaine";
 
     const emailHtml = `
 <!DOCTYPE html>
@@ -131,27 +352,27 @@ const handler = async (req: Request): Promise<Response> => {
     <h2>📊 Vos entrées</h2>
     <div class="data-row">
       <span class="data-label">Taille de l'équipe concernée</span>
-      <span class="data-value">${inputs.teamSize} personnes</span>
+      <span class="data-value">${validatedInputs.teamSize} personnes</span>
     </div>
     <div class="data-row">
       <span class="data-label">Temps par tâche</span>
-      <span class="data-value">${inputs.timePerTask} minutes</span>
+      <span class="data-value">${validatedInputs.timePerTask} minutes</span>
     </div>
     <div class="data-row">
       <span class="data-label">Fréquence</span>
-      <span class="data-value">${frequencyLabel} : ${inputs.frequencyValue}</span>
+      <span class="data-value">${frequencyLabel} : ${validatedInputs.frequencyValue}</span>
     </div>
     <div class="data-row">
       <span class="data-label">Jours de travail par semaine</span>
-      <span class="data-value">${inputs.workingDays} jours</span>
+      <span class="data-value">${validatedInputs.workingDays} jours</span>
     </div>
     <div class="data-row">
       <span class="data-label">Coût horaire moyen chargé</span>
-      <span class="data-value">${formatCurrency(inputs.hourlyCost)}</span>
+      <span class="data-value">${formatCurrency(validatedInputs.hourlyCost)}</span>
     </div>
     <div class="data-row">
       <span class="data-label">Potentiel d'automatisation</span>
-      <span class="data-value">${inputs.automationPotential}%</span>
+      <span class="data-value">${validatedInputs.automationPotential}%</span>
     </div>
   </div>
 
@@ -159,24 +380,24 @@ const handler = async (req: Request): Promise<Response> => {
     <h2>🚨 Résultats</h2>
     <div class="result-item">
       <div class="result-label">Heures perdues par an</div>
-      <div class="result-value">${formatNumber(results.annualHours)} heures</div>
+      <div class="result-value">${formatNumber(computedResults.annualHours)} heures</div>
     </div>
     <div class="result-item">
       <div class="result-label">Perte annuelle</div>
-      <div class="result-value">${formatCurrency(results.annualCost)}</div>
+      <div class="result-value">${formatCurrency(computedResults.annualCost)}</div>
     </div>
   </div>
 
   <div class="savings-box">
-    <h2>💡 Économies potentielles (${inputs.automationPotential}% automatisation)</h2>
+    <h2>💡 Économies potentielles (${validatedInputs.automationPotential}% automatisation)</h2>
     <div class="savings-grid">
       <div class="savings-item">
         <div class="label">Heures économisées</div>
-        <div class="value">${formatNumber(results.potentialSavingsHours)}</div>
+        <div class="value">${formatNumber(computedResults.potentialSavingsHours)}</div>
       </div>
       <div class="savings-item">
         <div class="label">Euros économisés</div>
-        <div class="value">${formatCurrency(results.potentialSavingsCost)}</div>
+        <div class="value">${formatCurrency(computedResults.potentialSavingsCost)}</div>
       </div>
     </div>
   </div>
@@ -184,18 +405,18 @@ const handler = async (req: Request): Promise<Response> => {
   <div class="math-section">
     <h2>🧮 Transparence des calculs</h2>
     <p><strong>Formule exécutions annuelles :</strong><br>
-    ${inputs.frequencyType === "day" 
-      ? `<code>${inputs.frequencyValue} × ${inputs.workingDays} jours × 52 semaines = ${formatNumber(annualRuns)}</code>`
-      : `<code>${inputs.frequencyValue} × 52 semaines = ${formatNumber(annualRuns)}</code>`
+    ${validatedInputs.frequencyType === "day" 
+      ? `<code>${validatedInputs.frequencyValue} × ${validatedInputs.workingDays} jours × 52 semaines = ${formatNumber(annualRuns)}</code>`
+      : `<code>${validatedInputs.frequencyValue} × 52 semaines = ${formatNumber(annualRuns)}</code>`
     }</p>
     <p><strong>Minutes annuelles :</strong><br>
-    <code>${inputs.teamSize} personnes × ${inputs.timePerTask} min × ${formatNumber(annualRuns)} exécutions = ${formatNumber(annualMinutes)} min</code></p>
+    <code>${validatedInputs.teamSize} personnes × ${validatedInputs.timePerTask} min × ${formatNumber(annualRuns)} exécutions = ${formatNumber(annualMinutes)} min</code></p>
     <p><strong>Heures annuelles :</strong><br>
-    <code>${formatNumber(annualMinutes)} min ÷ 60 = ${formatNumber(results.annualHours)} heures</code></p>
+    <code>${formatNumber(annualMinutes)} min ÷ 60 = ${formatNumber(computedResults.annualHours)} heures</code></p>
     <p><strong>Coût annuel :</strong><br>
-    <code>${formatNumber(results.annualHours)} heures × ${inputs.hourlyCost}€ = ${formatCurrency(results.annualCost)}</code></p>
+    <code>${formatNumber(computedResults.annualHours)} heures × ${validatedInputs.hourlyCost}€ = ${formatCurrency(computedResults.annualCost)}</code></p>
     <p><strong>Économies potentielles :</strong><br>
-    <code>${formatCurrency(results.annualCost)} × ${inputs.automationPotential}% = ${formatCurrency(results.potentialSavingsCost)}</code></p>
+    <code>${formatCurrency(computedResults.annualCost)} × ${validatedInputs.automationPotential}% = ${formatCurrency(computedResults.potentialSavingsCost)}</code></p>
   </div>
 
   <div class="cta-box">
@@ -206,14 +427,14 @@ const handler = async (req: Request): Promise<Response> => {
 
   <div class="footer">
     <p>Ce rapport a été généré par ROI Leak Calculator • XPLORE X</p>
-    <p>Email de contact : ${email}</p>
+    <p>Email de contact : ${sanitizedEmail}</p>
   </div>
 </body>
 </html>
     `;
 
     // Send email via Brevo
-    console.log("Sending email to:", RECIPIENT_EMAIL);
+    console.log(`[send-report] Sending email to: ${RECIPIENT_EMAIL}, reply-to: ${sanitizedEmail}`);
     
     const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
@@ -228,27 +449,27 @@ const handler = async (req: Request): Promise<Response> => {
           email: BREVO_SENDER_EMAIL,
         },
         to: [{ email: RECIPIENT_EMAIL }],
-        replyTo: { email: email },
-        subject: `ROI Leak Report — ${formatCurrency(results.annualCost)}/an perdu — ${formatNumber(results.annualHours)}h/an`,
+        replyTo: { email: sanitizedEmail },
+        subject: `ROI Leak Report — ${formatCurrency(computedResults.annualCost)}/an perdu — ${formatNumber(computedResults.annualHours)}h/an`,
         htmlContent: emailHtml,
       }),
     });
 
     if (!brevoResponse.ok) {
       const errorData = await brevoResponse.text();
-      console.error("Brevo API error:", errorData);
+      console.error("[send-report] Brevo API error:", errorData);
       throw new Error(`Failed to send email: ${brevoResponse.status}`);
     }
 
     const responseData = await brevoResponse.json();
-    console.log("Email sent successfully:", responseData);
+    console.log("[send-report] Email sent successfully:", responseData);
 
     return new Response(
       JSON.stringify({ success: true, messageId: responseData.messageId }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
-    console.error("Error in send-report function:", error);
+    console.error("[send-report] Error:", error);
     return new Response(
       JSON.stringify({ error: error.message || "Failed to send report" }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
