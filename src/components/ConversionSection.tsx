@@ -1,7 +1,18 @@
-import { useState } from "react";
-import { Mail, ArrowRight, Calendar } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Mail, ArrowRight, Calendar, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+interface CalculatorInputs {
+  teamSize: number;
+  timePerTask: number;
+  frequencyType: "day" | "week";
+  frequencyValue: number;
+  workingDays: number;
+  hourlyCost: number;
+  automationPotential: number;
+}
 
 interface CalculatorResults {
   annualHours: number;
@@ -12,6 +23,7 @@ interface CalculatorResults {
 
 interface ConversionSectionProps {
   results: CalculatorResults | null;
+  inputs?: CalculatorInputs | null;
   onBookCallClick: () => void;
 }
 
@@ -28,10 +40,32 @@ const formatNumber = (value: number): string => {
   return new Intl.NumberFormat("fr-FR").format(Math.round(value));
 };
 
-const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps) => {
+// Rate limiting: max 3 sends per hour
+const RATE_LIMIT_KEY = "report_send_timestamps";
+const MAX_SENDS_PER_HOUR = 3;
+
+const checkRateLimit = (): boolean => {
+  const now = Date.now();
+  const oneHourAgo = now - 60 * 60 * 1000;
+  const timestamps: number[] = JSON.parse(localStorage.getItem(RATE_LIMIT_KEY) || "[]");
+  const recentTimestamps = timestamps.filter((ts) => ts > oneHourAgo);
+  return recentTimestamps.length < MAX_SENDS_PER_HOUR;
+};
+
+const recordSend = () => {
+  const now = Date.now();
+  const oneHourAgo = now - 60 * 60 * 1000;
+  const timestamps: number[] = JSON.parse(localStorage.getItem(RATE_LIMIT_KEY) || "[]");
+  const recentTimestamps = timestamps.filter((ts) => ts > oneHourAgo);
+  recentTimestamps.push(now);
+  localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(recentTimestamps));
+};
+
+const ConversionSection = ({ results, inputs, onBookCallClick }: ConversionSectionProps) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,29 +90,91 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
       return;
     }
 
+    // Email length validation
+    if (email.length > 255) {
+      toast({
+        title: "Email trop long",
+        description: "L'adresse email ne peut pas dépasser 255 caractères.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check rate limit
+    if (!checkRateLimit()) {
+      toast({
+        title: "Limite atteinte",
+        description: "Vous avez atteint la limite d'envois. Veuillez réessayer dans une heure.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!results || !inputs) {
+      toast({
+        title: "Données manquantes",
+        description: "Veuillez d'abord calculer vos résultats.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Store in localStorage
-    const submissions = JSON.parse(localStorage.getItem("reportSubmissions") || "[]");
-    submissions.push({
-      email,
-      results,
-      submittedAt: new Date().toISOString(),
-      type: "report",
-    });
-    localStorage.setItem("reportSubmissions", JSON.stringify(submissions));
+    try {
+      const { data, error } = await supabase.functions.invoke("send-report", {
+        body: {
+          email,
+          inputs,
+          results,
+        },
+      });
 
-    // Simulate submission delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || "Failed to send report");
+      }
 
-    setIsSubmitting(false);
-    navigate("/thank-you", {
-      state: {
-        type: "report",
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      // Record successful send for rate limiting
+      recordSend();
+
+      // Store in localStorage for history
+      const submissions = JSON.parse(localStorage.getItem("reportSubmissions") || "[]");
+      submissions.push({
         email,
         results,
-      },
-    });
+        inputs,
+        submittedAt: new Date().toISOString(),
+        type: "report",
+      });
+      localStorage.setItem("reportSubmissions", JSON.stringify(submissions));
+
+      toast({
+        title: "Rapport envoyé !",
+        description: "Nous vous répondrons dans les 24 heures.",
+      });
+
+      navigate("/thank-you", {
+        state: {
+          type: "report",
+          email,
+          results,
+        },
+      });
+    } catch (error: any) {
+      console.error("Error sending report:", error);
+      toast({
+        title: "Erreur d'envoi",
+        description: error.message || "Une erreur est survenue. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -108,7 +204,7 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="flex gap-3">
+              <form ref={formRef} onSubmit={handleSubmit} className="flex gap-3">
                 <input
                   type="email"
                   value={email}
@@ -116,13 +212,21 @@ const ConversionSection = ({ results, onBookCallClick }: ConversionSectionProps)
                   placeholder="vous@entreprise.com"
                   className="input-field flex-1"
                   maxLength={255}
+                  disabled={isSubmitting}
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary whitespace-nowrap disabled:opacity-50"
+                  className="btn-primary whitespace-nowrap disabled:opacity-50 flex items-center gap-2"
                 >
-                  {isSubmitting ? "Envoi..." : "Envoyer mon rapport"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Envoi...
+                    </>
+                  ) : (
+                    "Envoyer mon rapport"
+                  )}
                 </button>
               </form>
             </div>
