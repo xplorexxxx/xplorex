@@ -1,12 +1,15 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 // Cloudflare Turnstile Site Key - this is safe to be public
 // Get your own keys at: https://dash.cloudflare.com/?to=/:account/turnstile
-// Replace this with your actual site key
-const TURNSTILE_SITE_KEY = "0x4AAAAAABeB-kXvXpFn31fB"; // Replace with your site key
+const TURNSTILE_SITE_KEY = "0x4AAAAAABeB-kXvXpFn31fB";
+
+export type TurnstileStatus = "loading" | "ready" | "verified" | "error" | "expired";
 
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
+  onStatusChange?: (status: TurnstileStatus) => void;
   onError?: () => void;
   onExpire?: () => void;
 }
@@ -22,10 +25,16 @@ declare global {
   }
 }
 
-const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) => {
+const TurnstileWidget = ({ onVerify, onStatusChange, onError, onExpire }: TurnstileWidgetProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const scriptLoadedRef = useRef(false);
+  const [status, setStatus] = useState<TurnstileStatus>("loading");
+
+  const updateStatus = useCallback((newStatus: TurnstileStatus) => {
+    setStatus(newStatus);
+    onStatusChange?.(newStatus);
+  }, [onStatusChange]);
 
   const renderWidget = useCallback(() => {
     if (!containerRef.current || !window.turnstile) return;
@@ -39,25 +48,30 @@ const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) 
       }
     }
 
+    updateStatus("ready");
+
     // Render new widget
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: TURNSTILE_SITE_KEY,
       callback: (token: string) => {
         console.log("[Turnstile] Verification successful");
+        updateStatus("verified");
         onVerify(token);
       },
       "error-callback": () => {
         console.error("[Turnstile] Verification error");
+        updateStatus("error");
         onError?.();
       },
       "expired-callback": () => {
         console.log("[Turnstile] Token expired");
+        updateStatus("expired");
         onExpire?.();
       },
       theme: "light",
       size: "normal",
     });
-  }, [onVerify, onError, onExpire]);
+  }, [onVerify, onError, onExpire, updateStatus]);
 
   useEffect(() => {
     // Check if script is already loaded
@@ -99,11 +113,19 @@ const TurnstileWidget = ({ onVerify, onError, onExpire }: TurnstileWidgetProps) 
   }, [renderWidget]);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="turnstile-container flex justify-center my-3"
-      style={{ minHeight: "65px" }}
-    />
+    <div className="flex flex-col items-center">
+      {status === "loading" && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground py-4">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span>Chargement de la vérification...</span>
+        </div>
+      )}
+      <div 
+        ref={containerRef} 
+        className="turnstile-container flex justify-center"
+        style={{ minHeight: status === "loading" ? "0px" : "65px", display: status === "loading" ? "none" : "flex" }}
+      />
+    </div>
   );
 };
 
