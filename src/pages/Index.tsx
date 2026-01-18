@@ -11,6 +11,16 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import BookCallModal from "@/components/BookCallModal";
 
+interface CalculatorInputs {
+  teamSize: number;
+  timePerTask: number;
+  frequencyType: "day" | "week";
+  frequencyValue: number;
+  workingDays: number;
+  hourlyCost: number;
+  automationPotential: number;
+}
+
 interface CalculatorResults {
   annualHours: number;
   annualCost: number;
@@ -21,9 +31,11 @@ interface CalculatorResults {
 const Index = () => {
   const [isBookCallModalOpen, setIsBookCallModalOpen] = useState(false);
   const [calculatorResults, setCalculatorResults] = useState<CalculatorResults | null>(null);
+  const [calculatorInputs, setCalculatorInputs] = useState<CalculatorInputs | null>(null);
 
-  const handleResultsChange = useCallback((results: CalculatorResults) => {
+  const handleResultsChange = useCallback((results: CalculatorResults, inputs: CalculatorInputs) => {
     setCalculatorResults(results);
+    setCalculatorInputs(inputs);
   }, []);
 
   const openBookCallModal = () => setIsBookCallModalOpen(true);
@@ -37,7 +49,7 @@ const Index = () => {
         <Hero />
         <HowItWorks />
         <Calculator onResultsChange={handleResultsChange} />
-        <ConversionSection results={calculatorResults} onBookCallClick={openBookCallModal} />
+        <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
         <CommonLeaks />
         <WhatYouCanAutomate />
         <FAQ />
