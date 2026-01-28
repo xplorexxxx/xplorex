@@ -72,7 +72,7 @@ const TechStack = () => {
   return (
     <section className="py-12 bg-background border-b border-border/50 overflow-hidden">
       <div className="container mx-auto px-4 mb-8">
-        <p className="text-center text-sm text-muted-foreground font-mono uppercase tracking-widest">
+        <p className="text-center text-sm text-muted-foreground font-poppins uppercase tracking-widest">
           Infrastructure d'IA Agente
         </p>
       </div>
@@ -92,7 +92,7 @@ const TechStack = () => {
               <div className="text-muted-foreground/40 transition-all duration-300 group-hover:text-muted-foreground/80 group-hover:scale-110">
                 {tech.svg}
               </div>
-              <span className="mt-3 text-xs font-mono text-muted-foreground/50 transition-colors duration-300 group-hover:text-muted-foreground/80">
+              <span className="mt-3 text-xs font-poppins text-muted-foreground/50 transition-colors duration-300 group-hover:text-muted-foreground/80">
                 {tech.name}
               </span>
             </div>
