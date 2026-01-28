@@ -46,21 +46,43 @@ const Index = () => {
   const closeBookCallModal = () => setIsBookCallModalOpen(false);
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden w-full max-w-[100vw] min-h-screen-dynamic">
       <Navbar onBookCallClick={openBookCallModal} />
       
-      <main className="overflow-x-hidden">
-        <Hero onBlueprintClick={openBookCallModal} />
-        <TechStack />
-        <HowItWorks />
-        <Calculator onResultsChange={handleResultsChange} />
-        <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
-        <EngineeringStandard />
-        <GuaranteeSection />
-        <CommonLeaks />
-        <WhatYouCanAutomate />
-        <FAQ />
-        <FinalCTA onBookCallClick={openBookCallModal} />
+      <main className="overflow-x-hidden w-full gpu-accelerated">
+        <section className="section-solid">
+          <Hero onBlueprintClick={openBookCallModal} />
+        </section>
+        <section className="section-alt">
+          <TechStack />
+        </section>
+        <section className="section-solid">
+          <HowItWorks />
+        </section>
+        <section className="section-alt" id="calculator">
+          <Calculator onResultsChange={handleResultsChange} />
+        </section>
+        <section className="section-solid">
+          <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
+        </section>
+        <section className="section-alt">
+          <EngineeringStandard />
+        </section>
+        <section className="section-solid">
+          <GuaranteeSection />
+        </section>
+        <section className="section-alt">
+          <CommonLeaks />
+        </section>
+        <section className="section-solid">
+          <WhatYouCanAutomate />
+        </section>
+        <section className="section-alt">
+          <FAQ />
+        </section>
+        <section className="section-solid">
+          <FinalCTA onBookCallClick={openBookCallModal} />
+        </section>
       </main>
 
       <Footer />
