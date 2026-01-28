@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { RotateCcw, Share2, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import AnimatedSection from "./AnimatedSection";
 
 interface CalculatorInputs {
   teamSize: number;
@@ -149,216 +150,241 @@ const Calculator = ({ onResultsChange }: CalculatorProps) => {
   return (
     <section id="calculator" className="section-padding">
       <div className="container-narrow">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Calculez votre perte de ROI
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Entrez vos chiffres ci-dessous pour voir combien de temps et d'argent votre équipe perd chaque année sur des tâches répétitives.
-          </p>
-        </div>
+        <AnimatedSection>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+              Calculez votre perte de ROI
+            </h2>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
+              Entrez vos chiffres ci-dessous pour voir combien de temps et d'argent votre équipe perd chaque année.
+            </p>
+          </div>
+        </AnimatedSection>
 
-        <div className="glass-card p-6 sm:p-8 lg:p-10">
-          <div className="grid lg:grid-cols-2 gap-10">
-            {/* Inputs Section */}
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-foreground mb-6">Vos entrées</h3>
+        <AnimatedSection delay={100}>
+          <div className="glass-card p-4 sm:p-6 lg:p-10">
+            {/* Mobile: Single column, Desktop: Two columns */}
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-10">
+              {/* Inputs Section */}
+              <div className="space-y-5 sm:space-y-6 order-1">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6">Vos entrées</h3>
 
-              {/* Team Size */}
-              <div>
-                <label className="label-text">Taille de l'équipe concernée</label>
-                <input
-                  type="number"
-                  value={inputs.teamSize}
-                  onChange={(e) => handleInputChange("teamSize", clamp(parseInt(e.target.value) || 1, 1, 500))}
-                  min={1}
-                  max={500}
-                  className="input-field"
-                />
-                <p className="helper-text">Combien de personnes effectuent cette tâche ? (1-500)</p>
-              </div>
-
-              {/* Time per Task */}
-              <div>
-                <label className="label-text">Temps par tâche (minutes)</label>
-                <input
-                  type="number"
-                  value={inputs.timePerTask}
-                  onChange={(e) => handleInputChange("timePerTask", clamp(parseInt(e.target.value) || 1, 1, 240))}
-                  min={1}
-                  max={240}
-                  className="input-field"
-                />
-                <p className="helper-text">Combien de temps faut-il pour terminer une fois ? (1-240 min)</p>
-              </div>
-
-              {/* Frequency Type */}
-              <div>
-                <label className="label-text">Fréquence</label>
-                <div className="flex gap-3">
-                  <select
-                    value={inputs.frequencyType}
-                    onChange={(e) => handleInputChange("frequencyType", e.target.value)}
-                    className="input-field flex-1"
-                  >
-                    <option value="day">Fois par jour</option>
-                    <option value="week">Fois par semaine</option>
-                  </select>
+                {/* Team Size */}
+                <div>
+                  <label className="label-text">Taille de l'équipe concernée</label>
                   <input
                     type="number"
-                    value={inputs.frequencyValue}
-                    onChange={(e) => handleInputChange("frequencyValue", clamp(parseInt(e.target.value) || 1, 1, 500))}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={inputs.teamSize}
+                    onChange={(e) => handleInputChange("teamSize", clamp(parseInt(e.target.value) || 1, 1, 500))}
                     min={1}
                     max={500}
-                    className="input-field w-24"
+                    className="input-field"
                   />
+                  <p className="helper-text">Combien de personnes effectuent cette tâche ? (1-500)</p>
                 </div>
-                <p className="helper-text">À quelle fréquence cette tâche est-elle effectuée ? (1-500)</p>
-              </div>
 
-              {/* Working Days */}
-              <div>
-                <label className="label-text">Jours de travail par semaine</label>
-                <input
-                  type="number"
-                  value={inputs.workingDays}
-                  onChange={(e) => handleInputChange("workingDays", clamp(parseInt(e.target.value) || 1, 1, 7))}
-                  min={1}
-                  max={7}
-                  className="input-field"
-                />
-                <p className="helper-text">Jours de travail de votre équipe (1-7)</p>
-              </div>
-
-              {/* Hourly Cost */}
-              <div>
-                <label className="label-text">Coût horaire moyen chargé (€)</label>
-                <input
-                  type="number"
-                  value={inputs.hourlyCost}
-                  onChange={(e) => handleInputChange("hourlyCost", clamp(parseInt(e.target.value) || 10, 10, 300))}
-                  min={10}
-                  max={300}
-                  className="input-field"
-                />
-                <p className="helper-text">Incluez salaire, avantages, charges (10€-300€)</p>
-              </div>
-
-              {/* Automation Potential Slider */}
-              <div>
-                <label className="label-text flex items-center gap-2">
-                  Potentiel d'automatisation estimé
-                  <span className="text-primary font-semibold">{inputs.automationPotential}%</span>
-                </label>
-                <input
-                  type="range"
-                  value={inputs.automationPotential}
-                  onChange={(e) => handleInputChange("automationPotential", parseInt(e.target.value))}
-                  min={10}
-                  max={90}
-                  step={5}
-                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>10%</span>
-                  <span>90%</span>
+                {/* Time per Task */}
+                <div>
+                  <label className="label-text">Temps par tâche (minutes)</label>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={inputs.timePerTask}
+                    onChange={(e) => handleInputChange("timePerTask", clamp(parseInt(e.target.value) || 1, 1, 240))}
+                    min={1}
+                    max={240}
+                    className="input-field"
+                  />
+                  <p className="helper-text">Combien de temps faut-il pour terminer une fois ? (1-240 min)</p>
                 </div>
-              </div>
 
-              {/* Actions */}
-              <div className="flex gap-3 pt-4">
-                <button onClick={handleReset} className="btn-secondary flex-1 text-sm">
-                  <RotateCcw className="w-4 h-4" />
-                  Réinitialiser
-                </button>
-                <button onClick={handleShare} className="btn-secondary flex-1 text-sm">
-                  <Share2 className="w-4 h-4" />
-                  Partager
-                </button>
-              </div>
-            </div>
-
-            {/* Results Section */}
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-foreground mb-6">Vos résultats</h3>
-
-              {/* Main Results */}
-              <div className="p-6 rounded-2xl bg-primary text-primary-foreground">
-                <div className="space-y-6">
-                  <div>
-                    <p className="text-sm opacity-80 mb-1">Heures perdues par an</p>
-                    <p className="text-4xl font-bold">{formatNumber(results.annualHours)}</p>
+                {/* Frequency Type - stacked on mobile */}
+                <div>
+                  <label className="label-text">Fréquence</label>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <select
+                      value={inputs.frequencyType}
+                      onChange={(e) => handleInputChange("frequencyType", e.target.value)}
+                      className="input-field flex-1"
+                    >
+                      <option value="day">Fois par jour</option>
+                      <option value="week">Fois par semaine</option>
+                    </select>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={inputs.frequencyValue}
+                      onChange={(e) => handleInputChange("frequencyValue", clamp(parseInt(e.target.value) || 1, 1, 500))}
+                      min={1}
+                      max={500}
+                      className="input-field w-full sm:w-28"
+                    />
                   </div>
-                  <div className="h-px bg-primary-foreground/20" />
-                  <div>
-                    <p className="text-sm opacity-80 mb-1">Perte annuelle</p>
-                    <p className="text-4xl font-bold">{formatCurrency(results.annualCost)}</p>
-                  </div>
+                  <p className="helper-text">À quelle fréquence cette tâche est-elle effectuée ? (1-500)</p>
                 </div>
-              </div>
 
-              {/* Potential Savings */}
-              <div 
-                className="p-6 rounded-2xl border-2 border-success/30"
-                style={{ background: "linear-gradient(135deg, hsl(162 72% 41% / 0.05) 0%, hsl(162 72% 41% / 0.1) 100%)" }}
-              >
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center">
-                    <Info className="w-4 h-4 text-success" />
-                  </div>
-                  <p className="font-semibold text-foreground">Économies potentielles ({inputs.automationPotential}% d'automatisation)</p>
+                {/* Working Days */}
+                <div>
+                  <label className="label-text">Jours de travail par semaine</label>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={inputs.workingDays}
+                    onChange={(e) => handleInputChange("workingDays", clamp(parseInt(e.target.value) || 1, 1, 7))}
+                    min={1}
+                    max={7}
+                    className="input-field"
+                  />
+                  <p className="helper-text">Jours de travail de votre équipe (1-7)</p>
                 </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Heures économisées</p>
-                    <p className="text-2xl font-bold gradient-text">{formatNumber(results.potentialSavingsHours)}</p>
+
+                {/* Hourly Cost */}
+                <div>
+                  <label className="label-text">Coût horaire moyen chargé (€)</label>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={inputs.hourlyCost}
+                    onChange={(e) => handleInputChange("hourlyCost", clamp(parseInt(e.target.value) || 10, 10, 300))}
+                    min={10}
+                    max={300}
+                    className="input-field"
+                  />
+                  <p className="helper-text">Incluez salaire, avantages, charges (10€-300€)</p>
+                </div>
+
+                {/* Automation Potential Slider - Enhanced for mobile */}
+                <div>
+                  <label className="label-text flex items-center justify-between gap-2">
+                    <span>Potentiel d'automatisation</span>
+                    <span className="text-primary font-bold text-lg">{inputs.automationPotential}%</span>
+                  </label>
+                  <div className="py-2">
+                    <input
+                      type="range"
+                      value={inputs.automationPotential}
+                      onChange={(e) => handleInputChange("automationPotential", parseInt(e.target.value))}
+                      min={10}
+                      max={90}
+                      step={5}
+                      className="mobile-slider"
+                    />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Euros économisés</p>
-                    <p className="text-2xl font-bold gradient-text">{formatCurrency(results.potentialSavingsCost)}</p>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span>10%</span>
+                    <span>90%</span>
                   </div>
                 </div>
+
+                {/* Actions - full width on mobile */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <button 
+                    onClick={handleReset} 
+                    className="btn-secondary flex-1 text-sm py-3.5 touch-manipulation active:scale-[0.98]"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Réinitialiser
+                  </button>
+                  <button 
+                    onClick={handleShare} 
+                    className="btn-secondary flex-1 text-sm py-3.5 touch-manipulation active:scale-[0.98]"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Partager
+                  </button>
+                </div>
               </div>
 
-              {/* Math Transparency Accordion */}
-              <div className="border border-border rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setShowFormula(!showFormula)}
-                  className="w-full px-4 py-3 flex items-center justify-between text-sm font-medium text-foreground hover:bg-secondary/50 transition-colors"
+              {/* Results Section - Shows first on mobile for immediate feedback */}
+              <div className="space-y-4 sm:space-y-6 order-2 lg:order-2">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6">Vos résultats</h3>
+
+                {/* Main Results */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-primary text-primary-foreground">
+                  <div className="space-y-5 sm:space-y-6">
+                    <div>
+                      <p className="text-xs sm:text-sm opacity-80 mb-1">Heures perdues par an</p>
+                      <p className="text-3xl sm:text-4xl font-bold">{formatNumber(results.annualHours)}</p>
+                    </div>
+                    <div className="h-px bg-primary-foreground/20" />
+                    <div>
+                      <p className="text-xs sm:text-sm opacity-80 mb-1">Perte annuelle</p>
+                      <p className="text-3xl sm:text-4xl font-bold">{formatCurrency(results.annualCost)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Potential Savings */}
+                <div 
+                  className="p-5 sm:p-6 rounded-2xl border-2 border-success/30"
+                  style={{ background: "linear-gradient(135deg, hsl(162 72% 41% / 0.05) 0%, hsl(162 72% 41% / 0.1) 100%)" }}
                 >
-                  <span>Transparence des calculs</span>
-                  {showFormula ? (
-                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                  )}
-                </button>
-                {showFormula && (
-                  <div className="px-4 py-3 bg-secondary/30 text-sm text-muted-foreground border-t border-border space-y-2">
-                    <p>
-                      <strong>Exécutions annuelles :</strong>{" "}
-                      {inputs.frequencyType === "day"
-                        ? `${inputs.frequencyValue} × ${inputs.workingDays} jours × 52 semaines = ${formatNumber(inputs.frequencyValue * inputs.workingDays * 52)}`
-                        : `${inputs.frequencyValue} × 52 semaines = ${formatNumber(inputs.frequencyValue * 52)}`}
-                    </p>
-                    <p>
-                      <strong>Minutes annuelles :</strong> {inputs.teamSize} personnes × {inputs.timePerTask} min × {formatNumber(inputs.frequencyType === "day" ? inputs.frequencyValue * inputs.workingDays * 52 : inputs.frequencyValue * 52)} exécutions = {formatNumber(results.annualHours * 60)}
-                    </p>
-                    <p>
-                      <strong>Heures annuelles :</strong> {formatNumber(results.annualHours * 60)} min ÷ 60 = {formatNumber(results.annualHours)} heures
-                    </p>
-                    <p>
-                      <strong>Coût annuel :</strong> {formatNumber(results.annualHours)} heures × {inputs.hourlyCost}€ = {formatCurrency(results.annualCost)}
-                    </p>
-                    <p>
-                      <strong>Économies potentielles :</strong> {formatCurrency(results.annualCost)} × {inputs.automationPotential}% = {formatCurrency(results.potentialSavingsCost)}
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                      <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-success" />
+                    </div>
+                    <p className="font-semibold text-foreground text-sm sm:text-base">
+                      Économies ({inputs.automationPotential}% automatisation)
                     </p>
                   </div>
-                )}
+                  <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">Heures économisées</p>
+                      <p className="text-xl sm:text-2xl font-bold gradient-text">{formatNumber(results.potentialSavingsHours)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-1">Euros économisés</p>
+                      <p className="text-xl sm:text-2xl font-bold gradient-text">{formatCurrency(results.potentialSavingsCost)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Math Transparency Accordion */}
+                <div className="border border-border rounded-xl overflow-hidden">
+                  <button
+                    onClick={() => setShowFormula(!showFormula)}
+                    className="w-full px-4 py-3.5 flex items-center justify-between text-sm font-medium text-foreground hover:bg-secondary/50 transition-colors touch-manipulation"
+                  >
+                    <span>Transparence des calculs</span>
+                    {showFormula ? (
+                      <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </button>
+                  {showFormula && (
+                    <div className="px-4 py-3 bg-secondary/30 text-xs sm:text-sm text-muted-foreground border-t border-border space-y-2">
+                      <p>
+                        <strong>Exécutions annuelles :</strong>{" "}
+                        {inputs.frequencyType === "day"
+                          ? `${inputs.frequencyValue} × ${inputs.workingDays} jours × 52 semaines = ${formatNumber(inputs.frequencyValue * inputs.workingDays * 52)}`
+                          : `${inputs.frequencyValue} × 52 semaines = ${formatNumber(inputs.frequencyValue * 52)}`}
+                      </p>
+                      <p>
+                        <strong>Minutes annuelles :</strong> {inputs.teamSize} × {inputs.timePerTask} min × {formatNumber(inputs.frequencyType === "day" ? inputs.frequencyValue * inputs.workingDays * 52 : inputs.frequencyValue * 52)} = {formatNumber(results.annualHours * 60)}
+                      </p>
+                      <p>
+                        <strong>Heures annuelles :</strong> {formatNumber(results.annualHours * 60)} ÷ 60 = {formatNumber(results.annualHours)}h
+                      </p>
+                      <p>
+                        <strong>Coût annuel :</strong> {formatNumber(results.annualHours)}h × {inputs.hourlyCost}€ = {formatCurrency(results.annualCost)}
+                      </p>
+                      <p>
+                        <strong>Économies :</strong> {formatCurrency(results.annualCost)} × {inputs.automationPotential}% = {formatCurrency(results.potentialSavingsCost)}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );

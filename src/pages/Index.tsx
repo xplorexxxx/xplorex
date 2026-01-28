@@ -13,6 +13,7 @@ import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import BookCallModal from "@/components/BookCallModal";
+import MobileStickyCTA from "@/components/MobileStickyCTA";
 
 interface CalculatorInputs {
   teamSize: number;
@@ -45,10 +46,10 @@ const Index = () => {
   const closeBookCallModal = () => setIsBookCallModalOpen(false);
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Navbar onBookCallClick={openBookCallModal} />
       
-      <main>
+      <main className="overflow-x-hidden">
         <Hero onBlueprintClick={openBookCallModal} />
         <TechStack />
         <HowItWorks />
@@ -64,8 +65,11 @@ const Index = () => {
 
       <Footer />
       
+      {/* Mobile Sticky CTA */}
+      <MobileStickyCTA />
+      
       <BookCallModal isOpen={isBookCallModalOpen} onClose={closeBookCallModal} />
-    </>
+    </div>
   );
 };
 
