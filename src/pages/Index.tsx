@@ -47,7 +47,7 @@ const Index = () => {
       <Navbar onBookCallClick={openBookCallModal} />
       
       <main>
-        <Hero />
+        <Hero onBlueprintClick={openBookCallModal} />
         <HowItWorks />
         <Calculator onResultsChange={handleResultsChange} />
         <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
