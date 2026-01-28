@@ -4,7 +4,7 @@ import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import Calculator from "@/components/Calculator";
 import ConversionSection from "@/components/ConversionSection";
-
+import GuaranteeSection from "@/components/GuaranteeSection";
 import CommonLeaks from "@/components/CommonLeaks";
 import WhatYouCanAutomate from "@/components/WhatYouCanAutomate";
 import FAQ from "@/components/FAQ";
@@ -51,7 +51,7 @@ const Index = () => {
         <HowItWorks />
         <Calculator onResultsChange={handleResultsChange} />
         <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
-        
+        <GuaranteeSection />
         <CommonLeaks />
         <WhatYouCanAutomate />
         <FAQ />
