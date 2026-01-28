@@ -113,14 +113,25 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
+  }
+
+  /* Mobile-optimized heading sizes */
+  h1 {
+    @apply text-3xl sm:text-4xl lg:text-5xl xl:text-6xl;
+  }
+
+  h2 {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
   }
 }
 
@@ -134,7 +145,7 @@
   }
 
   .section-padding {
-    @apply py-16 sm:py-20 lg:py-24;
+    @apply py-12 sm:py-16 lg:py-24;
   }
 
   .glass-card {
@@ -153,9 +164,10 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-accent-foreground rounded-xl transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-accent-foreground rounded-xl transition-all duration-200 touch-manipulation;
     background: var(--gradient-accent);
     box-shadow: var(--shadow-md), var(--shadow-glow);
+    min-height: 48px; /* Touch-friendly minimum */
   }
 
   .btn-primary:hover {
@@ -163,12 +175,23 @@
     box-shadow: var(--shadow-lg), 0 0 50px -10px hsl(216 94% 55% / 0.5);
   }
 
+  .btn-primary:active {
+    @apply scale-[0.98];
+  }
+
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold bg-secondary text-secondary-foreground rounded-xl border border-border transition-all duration-200 hover:bg-secondary/80;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold bg-secondary text-secondary-foreground rounded-xl border border-border transition-all duration-200 hover:bg-secondary/80 touch-manipulation;
+    min-height: 48px; /* Touch-friendly minimum */
+  }
+
+  .btn-secondary:active {
+    @apply scale-[0.98];
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200;
+    @apply w-full px-4 py-3.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 text-base;
+    min-height: 52px; /* Touch-friendly minimum */
+    font-size: 16px; /* Prevents iOS zoom on focus */
   }
 
   .label-text {
@@ -176,7 +199,42 @@
   }
 
   .helper-text {
-    @apply text-xs text-muted-foreground mt-1;
+    @apply text-xs text-muted-foreground mt-1.5;
+  }
+
+  /* Mobile menu animations */
+  .mobile-menu-enter {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+
+  .mobile-menu-exit {
+    animation: slideUp 0.2s ease-in forwards;
+  }
+
+  /* Safe area for devices with notch */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Custom slider styles for mobile */
+  .mobile-slider {
+    @apply w-full h-3 bg-secondary rounded-full appearance-none cursor-pointer;
+    -webkit-appearance: none;
+  }
+
+  .mobile-slider::-webkit-slider-thumb {
+    @apply appearance-none w-7 h-7 rounded-full bg-primary shadow-lg cursor-pointer;
+    -webkit-appearance: none;
+    box-shadow: 0 2px 8px hsl(216 94% 55% / 0.4);
+  }
+
+  .mobile-slider::-moz-range-thumb {
+    @apply w-7 h-7 rounded-full bg-primary shadow-lg cursor-pointer border-0;
+    box-shadow: 0 2px 8px hsl(216 94% 55% / 0.4);
   }
 }
 
@@ -200,6 +258,28 @@
     }
   }
 
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
   .animate-pulse-subtle {
     animation: pulseSubtle 3s ease-in-out infinite;
   }
@@ -211,5 +291,15 @@
     50% {
       opacity: 0.85;
     }
+  }
+
+  /* Prevent horizontal overflow on mobile */
+  .no-overflow-x {
+    overflow-x: hidden;
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[48px] min-w-[48px];
   }
 }
