@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import TechStack from "@/components/TechStack";
 import HowItWorks from "@/components/HowItWorks";
 import Calculator from "@/components/Calculator";
 import ConversionSection from "@/components/ConversionSection";
@@ -49,6 +50,7 @@ const Index = () => {
       
       <main>
         <Hero onBlueprintClick={openBookCallModal} />
+        <TechStack />
         <HowItWorks />
         <Calculator onResultsChange={handleResultsChange} />
         <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
