@@ -76,9 +76,6 @@ const technologies = [
 ];
 
 const TechStack = () => {
-  // Double the array for seamless infinite scroll
-  const duplicatedTech = [...technologies, ...technologies];
-
   return (
     <AnimatedSection>
       <section className="py-8 sm:py-12 bg-background border-b border-border/50 overflow-hidden">
@@ -88,36 +85,46 @@ const TechStack = () => {
           </p>
         </div>
         
-        <div className="relative">
-          {/* Gradient masks for smooth fade effect - narrower on mobile */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-background to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-background to-transparent z-10" />
-          
-          {/* Scrolling container */}
-          <div className="flex animate-scroll">
-            {duplicatedTech.map((tech, index) => (
+        {/* Marquee container with CSS mask for fade edges */}
+        <div 
+          className="relative marquee-container group"
+          style={{
+            maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
+        >
+          {/* Scrolling track - duplicated for seamless loop */}
+          <div className="marquee-track">
+            {/* First set of logos */}
+            {technologies.map((tech, index) => (
               <div
-                key={`${tech.name}-${index}`}
-                className="flex-shrink-0 mx-4 sm:mx-8 flex flex-col items-center group cursor-pointer"
+                key={`first-${tech.name}-${index}`}
+                className="marquee-item"
               >
                 <div 
-                  className="transition-all duration-300 ease-in-out"
-                  style={{ 
-                    filter: 'grayscale(100%) opacity(0.6)',
-                    color: tech.color
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.filter = 'grayscale(0%) opacity(1)';
-                    e.currentTarget.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.filter = 'grayscale(100%) opacity(0.6)';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
+                  className="tech-logo"
+                  style={{ color: tech.color }}
                 >
                   {tech.svg}
                 </div>
-                <span className="mt-2 sm:mt-3 text-[10px] sm:text-xs font-poppins text-muted-foreground/50 transition-colors duration-300 group-hover:text-muted-foreground/80">
+                <span className="tech-label font-poppins">
+                  {tech.name}
+                </span>
+              </div>
+            ))}
+            {/* Second set (duplicate) for seamless infinite scroll */}
+            {technologies.map((tech, index) => (
+              <div
+                key={`second-${tech.name}-${index}`}
+                className="marquee-item"
+              >
+                <div 
+                  className="tech-logo"
+                  style={{ color: tech.color }}
+                >
+                  {tech.svg}
+                </div>
+                <span className="tech-label font-poppins">
                   {tech.name}
                 </span>
               </div>
