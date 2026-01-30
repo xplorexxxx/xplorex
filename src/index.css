@@ -193,10 +193,16 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-accent-foreground rounded-xl transition-all duration-200 touch-manipulation;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-accent-foreground rounded-xl transition-transform duration-100;
     background: var(--gradient-accent);
     box-shadow: var(--shadow-md), var(--shadow-glow);
     min-height: 48px; /* Touch-friendly minimum */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
   }
 
   .btn-primary:hover {
@@ -206,15 +212,23 @@
 
   .btn-primary:active {
     @apply scale-[0.98];
+    transition-duration: 50ms;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold bg-secondary text-secondary-foreground rounded-xl border border-border transition-all duration-200 hover:bg-secondary/80 touch-manipulation;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold bg-secondary text-secondary-foreground rounded-xl border border-border transition-transform duration-100 hover:bg-secondary/80;
     min-height: 48px; /* Touch-friendly minimum */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
   }
 
   .btn-secondary:active {
     @apply scale-[0.98];
+    transition-duration: 50ms;
   }
 
   .input-field {

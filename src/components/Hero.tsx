@@ -69,13 +69,15 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
               const isSelected = selectedPersona === persona.id;
               return (
                 <button
+                  type="button"
                   key={persona.id}
                   onClick={() => {
                     setSelectedPersona(persona.id);
                     scrollToCalculator();
                   }}
+                  style={{ touchAction: "manipulation" }}
                   className={`
-                    inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-medium transition-all duration-200 touch-manipulation active:scale-[0.97]
+                    inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-medium transition-all duration-200 active:scale-[0.97]
                     ${isSelected 
                       ? "bg-primary text-primary-foreground border-primary shadow-lg" 
                       : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-secondary"
@@ -95,15 +97,19 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
         <AnimatedSection delay={400}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <button 
+              type="button"
               onClick={scrollToCalculator} 
               className="btn-primary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
+              style={{ touchAction: "manipulation" }}
             >
               Lancer mon diagnostic gratuit
               <ArrowDown className="w-4 h-4" />
             </button>
             <button 
+              type="button"
               onClick={onBlueprintClick}
               className="btn-secondary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
+              style={{ touchAction: "manipulation" }}
             >
               <FileText className="w-4 h-4" />
               Recevoir un Blueprint technique
