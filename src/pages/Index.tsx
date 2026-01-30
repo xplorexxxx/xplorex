@@ -1,19 +1,21 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechStack from "@/components/TechStack";
 import HowItWorks from "@/components/HowItWorks";
 import Calculator from "@/components/Calculator";
-import ConversionSection from "@/components/ConversionSection";
-import EngineeringStandard from "@/components/EngineeringStandard";
-import GuaranteeSection from "@/components/GuaranteeSection";
-import CommonLeaks from "@/components/CommonLeaks";
-import WhatYouCanAutomate from "@/components/WhatYouCanAutomate";
-import FAQ from "@/components/FAQ";
-import FinalCTA from "@/components/FinalCTA";
-import Footer from "@/components/Footer";
-import BookCallModal from "@/components/BookCallModal";
 import MobileStickyCTA from "@/components/MobileStickyCTA";
+
+// Lazy load below-fold components for faster initial load
+const ConversionSection = lazy(() => import("@/components/ConversionSection"));
+const EngineeringStandard = lazy(() => import("@/components/EngineeringStandard"));
+const GuaranteeSection = lazy(() => import("@/components/GuaranteeSection"));
+const CommonLeaks = lazy(() => import("@/components/CommonLeaks"));
+const WhatYouCanAutomate = lazy(() => import("@/components/WhatYouCanAutomate"));
+const FAQ = lazy(() => import("@/components/FAQ"));
+const FinalCTA = lazy(() => import("@/components/FinalCTA"));
+const Footer = lazy(() => import("@/components/Footer"));
+const BookCallModal = lazy(() => import("@/components/BookCallModal"));
 
 interface CalculatorInputs {
   teamSize: number;
@@ -32,6 +34,13 @@ interface CalculatorResults {
   potentialSavingsCost: number;
 }
 
+// Minimal loading fallback for lazy sections
+const SectionFallback = () => (
+  <div className="py-12 sm:py-16 lg:py-24 flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+  </div>
+);
+
 const Index = () => {
   const [isBookCallModalOpen, setIsBookCallModalOpen] = useState(false);
   const [calculatorResults, setCalculatorResults] = useState<CalculatorResults | null>(null);
@@ -42,14 +51,15 @@ const Index = () => {
     setCalculatorInputs(inputs);
   }, []);
 
-  const openBookCallModal = () => setIsBookCallModalOpen(true);
-  const closeBookCallModal = () => setIsBookCallModalOpen(false);
+  const openBookCallModal = useCallback(() => setIsBookCallModalOpen(true), []);
+  const closeBookCallModal = useCallback(() => setIsBookCallModalOpen(false), []);
 
   return (
     <div className="overflow-x-hidden w-full max-w-[100vw] min-h-screen-dynamic">
       <Navbar onBookCallClick={openBookCallModal} />
       
       <main className="overflow-x-hidden w-full gpu-accelerated">
+        {/* Critical above-fold content - not lazy loaded */}
         <section className="section-solid">
           <Hero onBlueprintClick={openBookCallModal} />
         </section>
@@ -62,35 +72,58 @@ const Index = () => {
         <section className="section-alt" id="calculator">
           <Calculator onResultsChange={handleResultsChange} />
         </section>
-        <section className="section-solid">
-          <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
-        </section>
-        <section className="section-alt">
-          <EngineeringStandard />
-        </section>
-        <section className="section-solid">
-          <GuaranteeSection />
-        </section>
-        <section className="section-alt">
-          <CommonLeaks />
-        </section>
-        <section className="section-solid">
-          <WhatYouCanAutomate />
-        </section>
-        <section className="section-alt">
-          <FAQ />
-        </section>
-        <section className="section-solid">
-          <FinalCTA onBookCallClick={openBookCallModal} />
-        </section>
+        
+        {/* Below-fold content - lazy loaded */}
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-solid">
+            <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-alt">
+            <EngineeringStandard />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-solid">
+            <GuaranteeSection />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-alt">
+            <CommonLeaks />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-solid">
+            <WhatYouCanAutomate />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-alt">
+            <FAQ />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-solid">
+            <FinalCTA onBookCallClick={openBookCallModal} />
+          </section>
+        </Suspense>
       </main>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       
       {/* Mobile Sticky CTA */}
       <MobileStickyCTA />
       
-      <BookCallModal isOpen={isBookCallModalOpen} onClose={closeBookCallModal} />
+      {/* Modal - only render when needed */}
+      {isBookCallModalOpen && (
+        <Suspense fallback={null}>
+          <BookCallModal isOpen={isBookCallModalOpen} onClose={closeBookCallModal} />
+        </Suspense>
+      )}
     </div>
   );
 };

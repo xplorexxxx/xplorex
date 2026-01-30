@@ -31,13 +31,20 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={scrollToCalculator} className="btn-primary text-base py-3.5 px-8">
+              <button 
+                type="button"
+                onClick={scrollToCalculator} 
+                className="btn-primary text-base py-3.5 px-8"
+                style={{ touchAction: "manipulation" }}
+              >
                 Calculer mon ROI
                 <ArrowRight className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={onBookCallClick}
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-xl border border-primary-foreground/20 transition-all duration-200"
+                style={{ touchAction: "manipulation" }}
               >
                 Réserver un appel offert
               </button>
