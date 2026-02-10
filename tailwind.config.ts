@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Poppins", "system-ui", "sans-serif"],
+        sans: ["Satoshi", "Poppins", "system-ui", "sans-serif"],
         heading: ['"Cal Sans"', "system-ui", "sans-serif"],
       },
       colors: {
