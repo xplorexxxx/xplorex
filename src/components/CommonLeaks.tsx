@@ -3,33 +3,33 @@ import { Clock, Zap, RefreshCw, FileSearch, MessageSquare, Database } from "luci
 const leaks = [
   {
     icon: Clock,
-    title: "Temps perdu en saisie manuelle",
-    description: "Copier-coller des données entre systèmes, remplir des formulaires, mettre à jour des tableurs manuellement.",
+    title: "Intelligence commerciale dispersée",
+    description: "Vos équipes passent 40% de leur temps à chercher des informations au lieu de vendre. Les données prospects sont fragmentées entre CRM, emails et tableurs.",
   },
   {
     icon: Zap,
-    title: "Prise de décision lente",
-    description: "Attendre des approbations, relancer des parties prenantes, retards de réponse qui bloquent les projets.",
+    title: "Cycles de décision rallongés",
+    description: "Sans scoring prédictif ni signaux d'intention automatisés, vos commerciaux investissent sur des comptes qui ne signeront jamais.",
   },
   {
     icon: RefreshCw,
-    title: "Processus répétitifs",
-    description: "Exécuter les mêmes rapports, envoyer des emails similaires, effectuer des vérifications identiques chaque jour.",
+    title: "Processus de qualification manuels",
+    description: "Chaque lead passe par les mêmes étapes manuelles : recherche, enrichissement, scoring. Un travail que l'IA souveraine exécute en quelques secondes.",
   },
   {
     icon: FileSearch,
-    title: "Recherche d'informations",
-    description: "Chercher des documents, traquer des réponses, naviguer dans des bases de connaissances dispersées.",
+    title: "Absence de ROI prédictif",
+    description: "Impossible de prédire quels comptes généreront du revenu. Les décisions commerciales restent basées sur l'intuition plutôt que sur la donnée.",
   },
   {
     icon: MessageSquare,
-    title: "Répondre aux mêmes questions",
-    description: "Mêmes questions clients, FAQ internes, questions d'intégration posées encore et encore.",
+    title: "Engagement personnalisé inexistant",
+    description: "Les communications de masse diluent votre marque. L'Account-Based Excellence exige une personnalisation que seule l'IA contextuelle peut délivrer à l'échelle.",
   },
   {
     icon: Database,
-    title: "Réconciliation de données",
-    description: "Faire correspondre des enregistrements entre systèmes, corriger des incohérences, valider l'intégrité des données.",
+    title: "Données non souveraines",
+    description: "Vos données commerciales transitent par des plateformes hors UE sans contrôle de gouvernance. Un risque réglementaire et concurrentiel sous-estimé.",
   },
 ];
 
@@ -38,11 +38,15 @@ const CommonLeaks = () => {
     <section className="section-padding bg-secondary/30">
       <div className="container-wide">
         <div className="text-center mb-16">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+            Diagnostic
+          </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Les pertes courantes que nous observons
+            Les fuites de valeur que nous identifions
           </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Ce sont les pertes de temps cachées qui coûtent silencieusement des milliers d'euros aux entreprises chaque année.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Ces inefficiences coûtent des centaines de milliers d'euros par an aux organisations 
+            qui n'ont pas encore structuré leur intelligence commerciale.
           </p>
         </div>
 
@@ -59,7 +63,7 @@ const CommonLeaks = () => {
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 {leak.title}
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {leak.description}
               </p>
             </div>

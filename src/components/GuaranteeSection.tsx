@@ -5,12 +5,10 @@ const GuaranteeSection = () => {
     <section className="section-padding bg-background">
       <div className="container-wide">
         <div className="max-w-4xl mx-auto">
-          {/* Main Card */}
           <div 
             className="relative p-8 sm:p-12 rounded-2xl bg-card border border-border/50 overflow-hidden"
             style={{ boxShadow: "var(--shadow-lg)" }}
           >
-            {/* Subtle gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-success/5 via-transparent to-primary/5 pointer-events-none" />
             
             <div className="relative z-10">
@@ -21,20 +19,18 @@ const GuaranteeSection = () => {
                 </div>
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-                    Garantie 0€ si pas de résultat
+                    Engagement de résultat, pas de moyens
                   </h2>
                   <p className="text-muted-foreground">
-                    Zéro risque. Zéro surprise. Résultats mesurables.
+                    Un modèle aligné sur votre succès. Pas de consulting à l'heure, pas de surprise.
                   </p>
                 </div>
               </div>
 
               {/* Promise Box */}
-              <div 
-                className="p-6 rounded-xl bg-success/5 border border-success/20 mb-8"
-              >
+              <div className="p-6 rounded-xl bg-success/5 border border-success/20 mb-8">
                 <p className="text-lg sm:text-xl font-semibold text-foreground text-center">
-                  Si nous ne livrons pas <span className="text-success">20% d'économie</span> en 15 jours,{" "}
+                  Si nous ne livrons pas <span className="text-success">20% d'économie mesurable</span> en 15 jours,{" "}
                   <span className="text-success">vous ne payez rien.</span>
                 </p>
               </div>
@@ -48,7 +44,7 @@ const GuaranteeSection = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">15 jours chrono</h3>
                     <p className="text-sm text-muted-foreground">
-                      Déploiement rapide d'un premier workflow mesurable.
+                      Premier workflow mesurable déployé, KPIs définis conjointement.
                     </p>
                   </div>
                 </div>
@@ -60,7 +56,7 @@ const GuaranteeSection = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Mesure objective</h3>
                     <p className="text-sm text-muted-foreground">
-                      Heures récupérées, coûts réduits — chiffres vérifiables.
+                      ROI prédictif calculé, chiffres auditables par votre DAF.
                     </p>
                   </div>
                 </div>
@@ -70,9 +66,9 @@ const GuaranteeSection = () => {
                     <BadgeEuro className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">Paiement au résultat</h3>
+                    <h3 className="font-semibold text-foreground mb-1">Facturation au résultat</h3>
                     <p className="text-sm text-muted-foreground">
-                      Pas d'économie constatée = pas de facture.
+                      Pas d'économie constatée, pas de facture. Alignement total.
                     </p>
                   </div>
                 </div>
@@ -81,9 +77,9 @@ const GuaranteeSection = () => {
               {/* Fine print */}
               <div className="pt-6 border-t border-border/50">
                 <p className="text-sm text-muted-foreground text-center">
-                  <span className="font-medium text-foreground">Pourquoi cette garantie ?</span>{" "}
-                  Nous croyons en notre méthode. Si nous n'apportons pas de valeur mesurable, 
-                  nous n'avons pas mérité votre confiance — ni votre argent.
+                  <span className="font-medium text-foreground">Pourquoi cet engagement ?</span>{" "}
+                  Nous sélectionnons nos clients. Si nous acceptons une mission, c'est que nous savons livrer. 
+                  Ce modèle élimine le risque pour vous — et nous force à l'excellence.
                 </p>
               </div>
             </div>

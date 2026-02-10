@@ -81,7 +81,7 @@ const TechStack = () => {
       <section className="py-8 sm:py-12 bg-background border-b border-border/50 overflow-hidden">
         <div className="container mx-auto px-4 mb-6 sm:mb-8">
           <p className="text-center text-xs sm:text-sm text-muted-foreground font-poppins uppercase tracking-widest">
-            Infrastructure d'IA Agente
+            Infrastructure souveraine d'IA — Hébergement UE
           </p>
         </div>
         
@@ -93,40 +93,21 @@ const TechStack = () => {
             WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
           }}
         >
-          {/* Scrolling track - duplicated for seamless loop */}
           <div className="marquee-track">
-            {/* First set of logos */}
             {technologies.map((tech, index) => (
-              <div
-                key={`first-${tech.name}-${index}`}
-                className="marquee-item"
-              >
-                <div 
-                  className="tech-logo"
-                  style={{ color: tech.color }}
-                >
+              <div key={`first-${tech.name}-${index}`} className="marquee-item">
+                <div className="tech-logo" style={{ color: tech.color }}>
                   {tech.svg}
                 </div>
-                <span className="tech-label font-poppins">
-                  {tech.name}
-                </span>
+                <span className="tech-label font-poppins">{tech.name}</span>
               </div>
             ))}
-            {/* Second set (duplicate) for seamless infinite scroll */}
             {technologies.map((tech, index) => (
-              <div
-                key={`second-${tech.name}-${index}`}
-                className="marquee-item"
-              >
-                <div 
-                  className="tech-logo"
-                  style={{ color: tech.color }}
-                >
+              <div key={`second-${tech.name}-${index}`} className="marquee-item">
+                <div className="tech-logo" style={{ color: tech.color }}>
                   {tech.svg}
                 </div>
-                <span className="tech-label font-poppins">
-                  {tech.name}
-                </span>
+                <span className="tech-label font-poppins">{tech.name}</span>
               </div>
             ))}
           </div>

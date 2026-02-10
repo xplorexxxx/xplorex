@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "Cette estimation est-elle précise ?",
-    answer: "Ce calculateur fournit une estimation fiable basée sur les données que vous fournissez. Les résultats réels peuvent varier en fonction de la complexité des tâches, des interruptions et d'autres facteurs. L'objectif est de mettre en évidence l'ampleur des économies potentielles, même si les chiffres réels diffèrent de 20-30%, l'opportunité est généralement significative.",
+    question: "Comment garantissez-vous la conformité RGPD de vos solutions ?",
+    answer: "Chaque flux est conçu avec la conformité RGPD comme prérequis, pas comme option. Consentement tracé, registre de traitement intégré, droit à l'oubli automatisé. Nos architectures respectent les directives ePrivacy et CNIL. Nous fournissons une documentation complète de conformité exploitable par votre DPO.",
   },
   {
-    question: "Quel coût horaire dois-je utiliser ?",
-    answer: "Utilisez le coût chargé — pas seulement le salaire. Cela inclut les avantages sociaux, les taxes, l'espace de bureau, l'équipement et les frais généraux. Une bonne règle : multipliez le salaire brut par 1,3-1,5 et divisez par les heures de travail annuelles (généralement 1 800-2 000). La plupart des entreprises se situent entre 35€ et 70€ de l'heure pour les postes opérationnels.",
+    question: "Où sont hébergées et traitées nos données ?",
+    answer: "Exclusivement dans l'Union Européenne. Nous utilisons des infrastructures souveraines sans aucun transfert vers des juridictions non-adéquates. Vos données ne sont jamais utilisées pour entraîner des modèles tiers. Export complet disponible sur demande, conformément au principe de portabilité RGPD.",
   },
   {
-    question: "Quels types de tâches sont les meilleurs pour l'automatisation ?",
-    answer: "Les tâches à fort volume, basées sur des règles et répétitives sont les meilleures candidates. Exemples : saisie de données, génération de rapports, réponses aux emails, mises à jour de statut, traitement de factures et gestion des FAQ clients. Si vous pouvez écrire une checklist claire pour une tâche, elle est probablement automatisable.",
+    question: "Qu'est-ce que l'Account-Based Excellence ?",
+    answer: "C'est l'évolution de l'ABM traditionnel, augmenté par l'intelligence artificielle souveraine. Au lieu de cibler des listes statiques, nos systèmes identifient dynamiquement les signaux d'intention, qualifient les comptes en temps réel et personnalisent l'engagement à l'échelle — avec une traçabilité complète de chaque interaction.",
   },
   {
-    question: "Ai-je besoin d'IA, ou juste d'automatisation ?",
-    answer: "Cela dépend de la tâche. Les tâches simples et structurées (comme déplacer des données entre systèmes) n'ont besoin que d'automatisation de workflow. Les tâches nécessitant du jugement, de la compréhension du langage ou le traitement de données non structurées bénéficient de l'IA. Beaucoup de solutions combinent les deux — l'automatisation pour le flux, l'IA pour les décisions.",
+    question: "Comment mesurez-vous le ROI prédictif ?",
+    answer: "Le ROI prédictif combine des données historiques, des signaux d'engagement et des modèles de scoring propriétaires pour estimer le retour sur investissement de chaque action commerciale avant qu'elle ne soit exécutée. Ce n'est pas de la projection — c'est de la modélisation prédictive basée sur vos données réelles, auditable par votre DAF.",
   },
   {
-    question: "Quelle est la rapidité de mise en œuvre d'un pilote ?",
-    answer: "La plupart des pilotes d'automatisation peuvent être définis, construits et testés en 2-4 semaines. Les intégrations simples peuvent ne prendre que quelques jours. La clé est de commencer par un processus bien défini et mesurable. Nous recommandons de commencer par votre plus grande perte de temps — c'est là que le ROI est le plus rapide.",
+    question: "Nos équipes doivent-elles changer leurs outils ?",
+    answer: "Non. Nous nous intégrons à votre stack existant (CRM, outils de communication, ERP). Notre infrastructure agit comme une couche d'intelligence qui augmente vos outils actuels sans les remplacer. La transition est transparente pour vos équipes — elles gardent leurs habitudes, avec des capacités décuplées.",
   },
   {
-    question: "Mes données sont-elles en sécurité ?",
-    answer: "Ce calculateur fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée à un serveur. Lorsque vous demandez un rapport, les données sont stockées localement sur votre appareil. Si vous réservez un appel, seules les informations que vous fournissez explicitement sont partagées avec notre équipe.",
+    question: "Quel est le modèle de gouvernance IA que vous appliquez ?",
+    answer: "Chaque modèle IA déployé est versionné, documenté et auditable. Nous monitorons les biais potentiels, assurons l'explicabilité des décisions et fournissons des logs d'audit en temps réel. Notre politique de gouvernance est formalisée et disponible sur demande pour vos équipes compliance et juridique.",
   },
 ];
 
@@ -37,11 +37,14 @@ const FAQ = () => {
     <section id="faq" className="section-padding bg-secondary/30">
       <div className="container-narrow">
         <div className="text-center mb-16">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+            FAQ
+          </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Questions fréquentes
+            Questions de dirigeants, réponses d'experts
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Tout ce que vous devez savoir sur le calculateur et les opportunités d'automatisation.
+            Les questions que posent les Directeurs Commerciaux, CTO et DPO avant de s'engager.
           </p>
         </div>
 
@@ -56,7 +59,7 @@ const FAQ = () => {
                 <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-5">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
+                <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
