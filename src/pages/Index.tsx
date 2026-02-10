@@ -12,8 +12,6 @@ const ConversionSection = lazy(() => import("@/components/ConversionSection"));
 const EngineeringStandard = lazy(() => import("@/components/EngineeringStandard"));
 const GuaranteeSection = lazy(() => import("@/components/GuaranteeSection"));
 const TechnicalSpecs = lazy(() => import("@/components/TechnicalSpecs"));
-const CommonLeaks = lazy(() => import("@/components/CommonLeaks"));
-const WhatYouCanAutomate = lazy(() => import("@/components/WhatYouCanAutomate"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const FinalCTA = lazy(() => import("@/components/FinalCTA"));
 const Footer = lazy(() => import("@/components/Footer"));
@@ -98,16 +96,6 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
             <GuaranteeSection />
-          </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <section className="section-alt">
-            <CommonLeaks />
-          </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <section className="section-solid">
-            <WhatYouCanAutomate />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>

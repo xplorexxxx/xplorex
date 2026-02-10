@@ -22,42 +22,45 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Main Footer Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        {/* Simplified Footer Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-12">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex items-center gap-2 mb-4">
               <img src={logo} alt="XPLORE X AI Logo" className="h-8 w-8 object-contain brightness-0 invert" />
-              <span className="font-heading text-xl tracking-tight">XPLORE X</span>
+              <span className="font-heading text-xl" style={{ letterSpacing: "0.03em" }}>XPLORE X</span>
             </div>
             <p className="text-sm text-navy-foreground/60 leading-relaxed max-w-xs">
               Infrastructure d'intelligence commerciale souveraine pour les organisations qui exigent performance, éthique et conformité.
             </p>
           </div>
 
-          {/* Solutions */}
+          {/* Navigation */}
           <div>
             <h4 className="font-semibold text-xs uppercase tracking-wider mb-4 text-navy-foreground/50">
-              Solutions
+              Navigation
             </h4>
             <ul className="space-y-2.5 text-sm text-navy-foreground/60">
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Prospection IA</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Automatisation de Workflow</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Intelligence de Données</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Account-Based Excellence</span></li>
-            </ul>
-          </div>
-
-          {/* Trust & Governance */}
-          <div>
-            <h4 className="font-semibold text-xs uppercase tracking-wider mb-4 text-navy-foreground/50">
-              Confiance & Gouvernance
-            </h4>
-            <ul className="space-y-2.5 text-sm text-navy-foreground/60">
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Trust Center</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Gouvernance IA</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Rapport ESG & Durabilité</span></li>
-              <li><span className="hover:text-navy-foreground transition-colors cursor-default">Documentation de sécurité</span></li>
+              <li>
+                <a href="#calculator" className="hover:text-navy-foreground transition-colors">
+                  Calculateur ROI
+                </a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-navy-foreground transition-colors">
+                  Comment ça marche
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-navy-foreground transition-colors">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-navy-foreground transition-colors">
+                  À propos
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -78,11 +81,6 @@ const Footer = () => {
                 </Link>
               </li>
               <li><span className="hover:text-navy-foreground transition-colors cursor-default">Mentions légales</span></li>
-              <li>
-                <Link to="/about" className="hover:text-navy-foreground transition-colors">
-                  À propos & Gouvernance
-                </Link>
-              </li>
             </ul>
           </div>
         </div>

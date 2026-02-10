@@ -78,12 +78,12 @@ const TechnicalSpecs = () => {
 
         {/* Full-width RAG pipeline — immersive horizontal flow */}
         <div className="mb-20">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {ragSteps.map((step, index) => {
               const Icon = step.icon;
               return (
                 <AnimatedSection key={step.title} delay={index * 120}>
-                  <div className="relative p-6 lg:p-8 border border-border/50 bg-card first:rounded-t-2xl sm:first:rounded-l-2xl sm:first:rounded-tr-none last:rounded-b-2xl sm:last:rounded-r-2xl sm:last:rounded-bl-none group hover:bg-primary/5 transition-colors duration-300">
+                  <div className="relative p-6 lg:p-8 border border-border/50 bg-card rounded-2xl group hover:bg-primary/5 transition-colors duration-300">
                     {/* Step number */}
                     <span className="text-[4rem] font-heading text-primary/[0.07] absolute top-2 right-4 leading-none">
                       {String(index + 1).padStart(2, "0")}
@@ -130,7 +130,7 @@ const TechnicalSpecs = () => {
           </div>
 
           <div className="lg:col-span-7">
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-5 lg:gap-6">
               {specs.map((spec, index) => {
                 const Icon = spec.icon;
                 return (
