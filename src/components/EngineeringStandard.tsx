@@ -45,7 +45,7 @@ const EngineeringStandard = () => {
       <div className="container-narrow">
         {/* Header */}
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Gouvernance & standards
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">

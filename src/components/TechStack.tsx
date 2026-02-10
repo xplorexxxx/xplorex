@@ -80,7 +80,7 @@ const TechStack = () => {
     <AnimatedSection>
       <section className="py-8 sm:py-12 bg-background border-b border-border/50 overflow-hidden">
         <div className="container mx-auto px-4 mb-6 sm:mb-8">
-          <p className="text-center text-xs sm:text-sm text-muted-foreground font-poppins uppercase tracking-widest">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground uppercase tracking-widest">
             Infrastructure souveraine d'IA — Hébergement UE
           </p>
         </div>
@@ -99,7 +99,7 @@ const TechStack = () => {
                 <div className="tech-logo" style={{ color: tech.color }}>
                   {tech.svg}
                 </div>
-                <span className="tech-label font-poppins">{tech.name}</span>
+                <span className="tech-label">{tech.name}</span>
               </div>
             ))}
             {technologies.map((tech, index) => (
@@ -107,7 +107,7 @@ const TechStack = () => {
                 <div className="tech-logo" style={{ color: tech.color }}>
                   {tech.svg}
                 </div>
-                <span className="tech-label font-poppins">{tech.name}</span>
+                <span className="tech-label">{tech.name}</span>
               </div>
             ))}
           </div>
