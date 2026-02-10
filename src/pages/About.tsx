@@ -45,7 +45,7 @@ const About = () => {
         <div className="container-wide flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 text-foreground">
             <img src={logo} alt="XPLORE X AI Logo" className="h-8 w-8 object-contain" width={32} height={32} />
-            <span className="font-poppins font-bold italic text-lg">XPLORE X</span>
+            <span className="font-heading text-xl tracking-tight">XPLORE X</span>
           </Link>
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -60,7 +60,7 @@ const About = () => {
           <div className="container-narrow text-center">
             <AnimatedSection>
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">À propos</p>
-              <h1 className="heading-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl text-foreground mb-6">
                 Infrastructure souveraine au service de l'intelligence commerciale
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -77,7 +77,7 @@ const About = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <AnimatedSection direction="left">
                 <div>
-                  <h2 className="heading-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">Notre mission</h2>
+                  <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-4">Notre mission</h2>
                   <p className="text-muted-foreground leading-relaxed mb-4">
                     Démocratiser l'accès à une infrastructure d'intelligence commerciale de niveau enterprise 
                     — sans compromettre la souveraineté des données ni l'éthique algorithmique.
@@ -111,7 +111,7 @@ const About = () => {
           <div className="container-narrow">
             <div className="text-center mb-12">
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Gouvernance</p>
-              <h2 className="heading-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
+              <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-4">
                 L'équipe dirigeante
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">

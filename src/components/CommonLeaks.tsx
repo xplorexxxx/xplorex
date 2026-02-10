@@ -38,7 +38,7 @@ const CommonLeaks = () => {
     <section className="section-padding bg-secondary/30">
       <div className="container-wide">
         <div className="text-center mb-16">
-          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Diagnostic
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">

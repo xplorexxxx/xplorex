@@ -28,7 +28,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img src={logo} alt="XPLORE X AI Logo" className="h-8 w-8 object-contain brightness-0 invert" />
-              <span className="font-poppins font-bold italic text-lg">XPLORE X</span>
+              <span className="font-heading text-xl tracking-tight">XPLORE X</span>
             </div>
             <p className="text-sm text-navy-foreground/60 leading-relaxed max-w-xs">
               Infrastructure d'intelligence commerciale souveraine pour les organisations qui exigent performance, éthique et conformité.
