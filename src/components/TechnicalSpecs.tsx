@@ -1,4 +1,5 @@
 import { Shield, Server, Eye, Lock, FileCheck, Database } from "lucide-react";
+import AnimatedSection from "./AnimatedSection";
 
 const specs = [
   {
@@ -38,11 +39,11 @@ const TechnicalSpecs = () => {
     <section className="section-padding bg-secondary/30">
       <div className="container-wide">
         {/* Header */}
-        <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+        <div className="text-center mb-14">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Documentation de sécurité
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="heading-serif text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground mb-4">
             Spécifications techniques & conformité
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -51,26 +52,27 @@ const TechnicalSpecs = () => {
           </p>
         </div>
 
-        {/* Specs Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Specs Grid with stagger + scan hover */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-reveal">
           {specs.map((spec) => {
             const Icon = spec.icon;
             return (
-              <div
-                key={spec.title}
-                className="p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 group"
-                style={{ boxShadow: "var(--shadow-sm)" }}
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <Icon className="w-6 h-6 text-primary" />
+              <AnimatedSection key={spec.title}>
+                <div
+                  className="p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300 group security-scan-hover h-full"
+                  style={{ boxShadow: "var(--shadow-sm)" }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {spec.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {spec.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {spec.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {spec.description}
-                </p>
-              </div>
+              </AnimatedSection>
             );
           })}
         </div>
@@ -79,8 +81,8 @@ const TechnicalSpecs = () => {
         <div className="text-center mt-10">
           <p className="text-muted-foreground text-sm">
             Besoin de notre documentation complète de sécurité ?{" "}
-            <a 
-              href="mailto:security@xplorex.io" 
+            <a
+              href="mailto:security@xplorex.io"
               className="text-primary hover:underline font-medium"
             >
               Contactez notre équipe conformité

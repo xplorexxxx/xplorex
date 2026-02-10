@@ -1,5 +1,4 @@
 import { useState, useCallback, lazy, Suspense } from "react";
-import TrustHeader from "@/components/TrustHeader";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechStack from "@/components/TechStack";
@@ -58,8 +57,6 @@ const Index = () => {
 
   return (
     <div className="overflow-x-hidden w-full max-w-[100vw] min-h-screen-dynamic">
-      {/* Trust Header - above navbar */}
-      <TrustHeader />
       <Navbar onBookCallClick={openBookCallModal} />
       
       <main className="overflow-x-hidden w-full gpu-accelerated">
@@ -90,17 +87,17 @@ const Index = () => {
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
-            <EngineeringStandard />
+            <TechnicalSpecs />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <section className="section-alt">
-            <GuaranteeSection />
+            <EngineeringStandard />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
-            <TechnicalSpecs />
+            <GuaranteeSection />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
