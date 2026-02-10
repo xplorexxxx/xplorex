@@ -1,4 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from "react";
+import TrustHeader from "@/components/TrustHeader";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechStack from "@/components/TechStack";
@@ -6,10 +7,12 @@ import HowItWorks from "@/components/HowItWorks";
 import Calculator from "@/components/Calculator";
 import MobileStickyCTA from "@/components/MobileStickyCTA";
 
-// Lazy load below-fold components for faster initial load
+// Lazy load below-fold components
+const CaseStudy = lazy(() => import("@/components/CaseStudy"));
 const ConversionSection = lazy(() => import("@/components/ConversionSection"));
 const EngineeringStandard = lazy(() => import("@/components/EngineeringStandard"));
 const GuaranteeSection = lazy(() => import("@/components/GuaranteeSection"));
+const TechnicalSpecs = lazy(() => import("@/components/TechnicalSpecs"));
 const CommonLeaks = lazy(() => import("@/components/CommonLeaks"));
 const WhatYouCanAutomate = lazy(() => import("@/components/WhatYouCanAutomate"));
 const FAQ = lazy(() => import("@/components/FAQ"));
@@ -34,7 +37,6 @@ interface CalculatorResults {
   potentialSavingsCost: number;
 }
 
-// Minimal loading fallback for lazy sections
 const SectionFallback = () => (
   <div className="py-12 sm:py-16 lg:py-24 flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
@@ -56,10 +58,12 @@ const Index = () => {
 
   return (
     <div className="overflow-x-hidden w-full max-w-[100vw] min-h-screen-dynamic">
+      {/* Trust Header - above navbar */}
+      <TrustHeader />
       <Navbar onBookCallClick={openBookCallModal} />
       
       <main className="overflow-x-hidden w-full gpu-accelerated">
-        {/* Critical above-fold content - not lazy loaded */}
+        {/* Hero - untouched */}
         <section className="section-solid">
           <Hero onBlueprintClick={openBookCallModal} />
         </section>
@@ -73,7 +77,7 @@ const Index = () => {
           <Calculator onResultsChange={handleResultsChange} />
         </section>
         
-        {/* Below-fold content - lazy loaded */}
+        {/* Below-fold */}
         <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
             <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
@@ -81,12 +85,22 @@ const Index = () => {
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <section className="section-alt">
-            <EngineeringStandard />
+            <CaseStudy />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
+            <EngineeringStandard />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-alt">
             <GuaranteeSection />
+          </section>
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <section className="section-solid">
+            <TechnicalSpecs />
           </section>
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
@@ -115,10 +129,8 @@ const Index = () => {
         <Footer />
       </Suspense>
       
-      {/* Mobile Sticky CTA */}
       <MobileStickyCTA />
       
-      {/* Modal - only render when needed */}
       {isBookCallModalOpen && (
         <Suspense fallback={null}>
           <BookCallModal isOpen={isBookCallModalOpen} onClose={closeBookCallModal} />

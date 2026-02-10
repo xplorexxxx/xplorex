@@ -11,31 +11,33 @@ const EngineeringStandard = () => {
   const pillars = [
     {
       icon: Zap,
-      title: "Stabilité",
-      description: "Le système tourne sans intervention humaine pendant 30 jours minimum.",
+      title: "Stabilité opérationnelle",
+      description: "Chaque système est conçu pour fonctionner en autonomie 30 jours minimum — sans intervention humaine, sans dégradation.",
     },
     {
       icon: Shield,
-      title: "Sécurité",
-      description: "Données chiffrées, accès tracés, aucune fuite vers des tiers non validés.",
+      title: "Conformité native",
+      description: "RGPD, ePrivacy, SOC2-ready. Données chiffrées, accès tracés, aucune fuite vers des tiers non validés par votre DPO.",
     },
     {
       icon: RefreshCw,
-      title: "Auto-correction",
-      description: "En cas d'erreur, le système détecte, alerte, et propose une correction.",
+      title: "Auto-correction intelligente",
+      description: "En cas d'anomalie, le système détecte, alerte et corrige. Chaque incident est documenté et enrichit le modèle.",
     },
   ];
 
   const testsBeforeDeployment = [
-    "Simulation de 1 000 cas réels sur vos données",
-    "Stress-test sur les scénarios d'exception",
+    "Simulation sur 1 000+ cas réels issus de vos données",
+    "Stress-test sur scénarios d'exception et cas limites",
     "Audit de sécurité par checklist SOC2-ready",
+    "Validation du respect des protocoles RGPD/ePrivacy",
   ];
 
   const whatWeRefuse = [
-    "Des automatisations \"rigides\" qui cassent au premier cas imprévu",
-    "Des systèmes sans monitoring ni alertes",
-    "Des solutions dépendantes d'un seul fournisseur cloud",
+    "Des systèmes « boîte noire » sans traçabilité des décisions IA",
+    "Des solutions sans monitoring ni gouvernance intégrée",
+    "Des architectures dépendantes d'un fournisseur non-souverain",
+    "Des déploiements sans mesure de ROI objectif et auditable",
   ];
 
   return (
@@ -43,11 +45,15 @@ const EngineeringStandard = () => {
       <div className="container-narrow">
         {/* Header */}
         <div className="text-center mb-12">
+          <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3 font-poppins">
+            Gouvernance & standards
+          </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Notre standard d'ingénierie
+            IA éthique, conformité sans compromis
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Chaque système passe 3 tests avant d'entrer en production.
+            Chaque système passe nos protocoles de validation avant d'entrer en production. 
+            La performance ne justifie jamais un raccourci sur la sécurité.
           </p>
         </div>
 
@@ -70,13 +76,12 @@ const EngineeringStandard = () => {
           })}
         </div>
 
-        {/* Two columns: Tests + Refusals */}
+        {/* Two columns */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Tests before deployment */}
           <div className="glass-card p-6">
             <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <Check className="w-5 h-5 text-success" />
-              Nos tests avant déploiement
+              Protocoles de validation
             </h4>
             <ul className="space-y-3">
               {testsBeforeDeployment.map((test, index) => (
@@ -90,11 +95,10 @@ const EngineeringStandard = () => {
             </ul>
           </div>
 
-          {/* What we refuse */}
           <div className="glass-card p-6">
             <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <X className="w-5 h-5 text-destructive" />
-              Ce qu'on refuse de livrer
+              Ce que nous refusons de livrer
             </h4>
             <ul className="space-y-3">
               {whatWeRefuse.map((item, index) => (
@@ -109,10 +113,10 @@ const EngineeringStandard = () => {
           </div>
         </div>
 
-        {/* Closing CTA */}
+        {/* CTA */}
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            Vous voulez savoir si votre process actuel passerait ces tests ?
+            Votre infrastructure actuelle passe-t-elle ces standards ?
           </p>
           <button onClick={scrollToCalculator} className="btn-primary">
             Lancer le diagnostic
