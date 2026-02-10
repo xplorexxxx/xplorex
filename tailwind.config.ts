@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         poppins: ["Poppins", "system-ui", "sans-serif"],
+        serif: ["Lora", "Georgia", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,6 +52,14 @@ export default {
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
+        },
+        navy: {
+          DEFAULT: "hsl(var(--navy))",
+          foreground: "hsl(var(--navy-foreground))",
+        },
+        steel: {
+          DEFAULT: "hsl(var(--steel))",
+          light: "hsl(var(--steel-light))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
