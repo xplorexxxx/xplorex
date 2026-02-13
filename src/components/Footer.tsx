@@ -75,7 +75,11 @@ const Footer = () => {
                   Conditions d'utilisation
                 </Link>
               </li>
-              <li><span className="text-white/60 cursor-default">Mentions légales</span></li>
+              <li>
+                <Link to="/mentions-legales" className="hover:text-white transition-colors">
+                  Mentions légales
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
