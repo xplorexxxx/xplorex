@@ -69,9 +69,9 @@ const MentionsLegales = () => {
               5. Hébergeur du site
             </h2>
             <ul className="space-y-2 text-sm">
-              <li><strong className="text-foreground">Nom / Raison sociale :</strong> [À compléter]</li>
-              <li><strong className="text-foreground">Adresse :</strong> [À compléter]</li>
-              <li><strong className="text-foreground">Numéro de téléphone :</strong> [À compléter]</li>
+              <li><strong className="text-foreground">Nom / Raison sociale :</strong>Nom / Raison sociale : Namecheap, Inc.</li>
+              <li><strong className="text-foreground">Adresse :</strong>Adresse : 4600 East Washington Street, Suite 305, Phoenix, AZ 85034, USA</li>
+              <li><strong className="text-foreground">Numéro de téléphone :</strong>Contact : https://www.namecheap.com/contact-us/</li>
             </ul>
           </section>
 
@@ -137,8 +137,8 @@ const MentionsLegales = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default MentionsLegales;
