@@ -9,6 +9,7 @@ interface NavbarProps {
 
 const allNavLinks = [
   { label: "Services", href: "/services", isPage: true, homeOnly: false },
+  { label: "À propos", href: "/about", isPage: true, homeOnly: false },
   { label: "Calculateur", href: "#calculator", isPage: false, homeOnly: true },
   { label: "FAQ", href: "#faq", isPage: false, homeOnly: true },
 ];
