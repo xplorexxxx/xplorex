@@ -2,7 +2,7 @@ import { TrendingUp, Target, Users, BarChart3, Shield, Lock } from "lucide-react
 import AnimatedSection from "./AnimatedSection";
 
 const kpis = [
-  { icon: TrendingUp, value: "+340%", label: "ROI sur 6 mois", color: "text-success" },
+  { icon: TrendingUp, value: "+340%", label: "ROI sur ce projet", color: "text-success" },
   { icon: Target, value: "87%", label: "Taux de pénétration", color: "text-primary" },
   { icon: Users, value: "12→3j", label: "Cycle de qualification", color: "text-foreground" },
   { icon: BarChart3, value: "2,4M€", label: "Pipeline généré", color: "text-success" },
