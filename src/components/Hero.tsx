@@ -168,8 +168,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
           <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-border/50">
             <div className="flex justify-center lg:justify-start">
               <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 rounded-2xl bg-success/10 border border-success/20">
-                <span className="text-success font-semibold text-sm sm:text-base">20% d'économie en 15 jours</span>
-                <span className="text-muted-foreground text-xs sm:text-sm">ou vous ne payez rien</span>
+                <span className="text-success font-semibold text-sm sm:text-base">Résultat mesurable en 15 jours</span>
+                <span className="text-muted-foreground text-xs sm:text-sm">ou 0€ facturé — engagement contractuel</span>
               </div>
             </div>
           </div>
