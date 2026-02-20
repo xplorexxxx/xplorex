@@ -38,8 +38,11 @@ const MentionsLegales = () => {
             <h2 className="font-heading text-xl text-foreground mb-4" style={{ letterSpacing: "0.03em" }}>
               2. Activité
             </h2>
-            <p className="text-sm">
+            <p className="text-sm mb-3">
               L'entreprise exerce des activités de formation non continue et non qualifiante (marketing, finance, entrepreneuriat, IA, technologie), de coaching professionnel et de vente en ligne de produits digitaux.
+            </p>
+            <p className="text-sm">
+              L'entreprise exerce des activités de conseil et de déploiement de solutions d'intelligence artificielle pour les entreprises, notamment dans le secteur du recrutement. Cela inclut l'automatisation de processus, le développement de systèmes de sourcing assistés par IA, et l'intégration d'infrastructures techniques (workflows, RAG, LLM).
             </p>
           </section>
 
