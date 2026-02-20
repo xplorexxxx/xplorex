@@ -27,7 +27,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
               Prêt à sourcer 5× plus sans recruter ?
             </h2>
             <p className="text-lg text-primary-foreground/80 max-w-xl mx-auto mb-8">
-              Estimez vos placements supplémentaires en 2 minutes, ou réservez un audit gratuit de votre process de sourcing avec un spécialiste IA recrutement.
+              Estimez vos placements supplémentaires en 2 minutes, ou réservez un audit offert de votre process de sourcing avec un spécialiste IA recrutement.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -46,7 +46,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-xl border border-primary-foreground/20 transition-all duration-200"
                 style={{ touchAction: "manipulation" }}
               >
-                Réserver mon audit sourcing gratuit
+                Réserver mon audit sourcing offert
               </button>
             </div>
           </div>

@@ -104,7 +104,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                   style={{ touchAction: "manipulation" }}
                 >
                   <FileText className="w-4 h-4" />
-                  Réserver un audit gratuit
+                  Réserver un audit offert
                 </button>
               </div>
             </AnimatedSection>
