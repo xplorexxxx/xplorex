@@ -1,6 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { Cog, BarChart3, Rocket, ClipboardCheck, Search, PenTool, Play, ShieldCheck, ArrowRight } from "lucide-react";
+import { Cog, BarChart3, Rocket, ClipboardCheck, Search, PenTool, Play, ShieldCheck, ArrowRight, Brain } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import AnimatedSection from "@/components/AnimatedSection";
 
@@ -9,57 +9,72 @@ const BookCallModal = lazy(() => import("@/components/BookCallModal"));
 
 const pillars = [
   {
-    badge: "OPS",
-    title: "Automatisation opérationnelle",
-    subtitle: "Ops / COO",
-    icon: Cog,
+    badge: "SRC",
+    title: "Sourcing LinkedIn IA",
+    subtitle: "Chasse automatisée",
+    icon: Search,
     items: [
-      "Traitement et routage automatique des documents",
-      "Extraction et réconciliation de données fournisseurs",
-      "Orchestration de workflows multi-systèmes",
+      "Extraction et enrichissement automatique de profils LinkedIn",
+      "Scoring IA des candidats selon le brief du mandat",
+      "Messages d'approche hyper-personnalisés générés par IA",
     ],
-    kpiValue: "-65%",
-    kpiLabel: "temps de traitement moyen",
+    kpiValue: "×5",
+    kpiLabel: "profils qualifiés par recruteur/jour",
     kpiColor: "text-success",
     bgColor: "bg-success/10",
   },
   {
-    badge: "FIN",
-    title: "Intelligence financière",
-    subtitle: "DAF / Finance",
-    icon: BarChart3,
-    items: [
-      "Réconciliation comptable automatisée",
-      "Détection d'anomalies sur les flux de trésorerie",
-      "Prévision budgétaire prédictive",
-    ],
-    kpiValue: "-91%",
-    kpiLabel: "temps de traitement factures",
-    kpiColor: "text-success",
-    bgColor: "bg-success/10",
-  },
-  {
-    badge: "SAAS",
-    title: "Account-Based Excellence",
-    subtitle: "SaaS / Tech",
+    badge: "BIZ",
+    title: "Business Dev Automatique",
+    subtitle: "Acquisition de mandats",
     icon: Rocket,
     items: [
-      "Infrastructure RAG pour scoring et qualification",
-      "Personnalisation des séquences commerciales par IA",
-      "Analyse prédictive du pipeline",
+      "Identification automatisée des entreprises qui vont recruter",
+      "Séquences multi-canal personnalisées (LinkedIn + email)",
+      "Pipeline clients avec relances automatiques",
     ],
-    kpiValue: "+340%",
-    kpiLabel: "ROI sur le pipeline commercial",
+    kpiValue: "+120%",
+    kpiLabel: "nouveaux mandats générés",
+    kpiColor: "text-success",
+    bgColor: "bg-success/10",
+  },
+  {
+    badge: "RAG",
+    title: "Intelligence Vivier",
+    subtitle: "RAG sur votre base candidats",
+    icon: Brain,
+    items: [
+      "Interrogez votre vivier en langage naturel",
+      "Réactivation automatique des candidats dormants",
+      "Matching intelligent brief ↔ profils existants",
+    ],
+    kpiValue: "30%",
+    kpiLabel: "des placements depuis le vivier existant",
+    kpiColor: "text-primary",
+    bgColor: "bg-primary/10",
+  },
+  {
+    badge: "VEI",
+    title: "Audit Sectoriel",
+    subtitle: "Intelligence marché",
+    icon: BarChart3,
+    items: [
+      "Veille automatisée : levées de fonds, départs clés, restructurations",
+      "Rapport hebdomadaire des entreprises en phase de recrutement",
+      "Signaux faibles détectés par IA pour anticiper les mandats",
+    ],
+    kpiValue: "3 mois",
+    kpiLabel: "d'avance sur la concurrence",
     kpiColor: "text-primary",
     bgColor: "bg-primary/10",
   },
 ];
 
 const steps = [
-  { icon: ClipboardCheck, title: "Diagnostic", duration: "2 min", description: "Calculateur ROI en ligne" },
-  { icon: Search, title: "Audit technique", duration: "48h", description: "Analyse de votre stack et processus" },
-  { icon: PenTool, title: "Architecture", duration: "5 jours", description: "Design de l'infrastructure IA" },
-  { icon: Play, title: "Déploiement", duration: "15 jours", description: "Mise en production avec résultats mesurables" },
+  { icon: ClipboardCheck, title: "Diagnostic", duration: "30 min", description: "Audit de votre stack actuel et de vos process de sourcing" },
+  { icon: Search, title: "Architecture", duration: "48h", description: "Design des workflows n8n + IA adaptés à vos mandats" },
+  { icon: PenTool, title: "Déploiement", duration: "15 jours", description: "Mise en production avec formation de vos recruteurs" },
+  { icon: Play, title: "Résultats", duration: "Mois 1", description: "Premiers placements supplémentaires mesurés" },
 ];
 
 const Services = () => {
@@ -78,11 +93,10 @@ const Services = () => {
             <AnimatedSection>
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Nos solutions</p>
               <h1 className="font-heading text-foreground mb-6">
-                Solutions IA sur-mesure pour chaque département
+                4 modules IA conçus pour les cabinets de recrutement
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                De l'audit initial au déploiement en production, nos infrastructures IA s'intègrent 
-                à votre stack existant et délivrent des résultats mesurables en 15 jours.
+                Du sourcing automatisé à l'intelligence vivier, chaque module se déploie en 15 jours et génère des résultats mesurables dès le premier mois.
               </p>
             </AnimatedSection>
           </div>
@@ -94,11 +108,11 @@ const Services = () => {
             <AnimatedSection>
               <div className="text-center mb-12">
                 <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Expertise</p>
-                <h2 className="font-heading text-foreground mb-4">Nos 3 piliers d'intervention</h2>
+                <h2 className="font-heading text-foreground mb-4">Nos 4 modules d'intervention</h2>
               </div>
             </AnimatedSection>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {pillars.map((pillar, index) => {
                 const Icon = pillar.icon;
                 return (
@@ -174,10 +188,10 @@ const Services = () => {
                 <ShieldCheck className="w-10 h-10 text-success mx-auto mb-4" />
                 <h2 className="font-heading text-foreground mb-4">Garantie résultat</h2>
                 <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-3">
-                  Si nos solutions ne génèrent pas au minimum <span className="font-semibold text-foreground">20% d'efficacité opérationnelle en 15 jours</span>, vous ne payez rien.
+                  Si nos solutions ne génèrent pas <span className="font-semibold text-foreground">des placements supplémentaires mesurables dès le premier mois</span>, vous ne payez rien.
                 </p>
                 <p className="text-xs text-muted-foreground/60">
-                  Source : Deloitte, « Directions financières : comment tirer parti de l'IA ? », 2025
+                  Basé sur les résultats mesurés chez nos clients cabinets de recrutement.
                 </p>
               </div>
             </AnimatedSection>
@@ -188,9 +202,9 @@ const Services = () => {
         <section className="section-padding bg-background">
           <div className="container-narrow text-center">
             <AnimatedSection>
-              <h2 className="font-heading text-foreground mb-4">Découvrez votre potentiel</h2>
+              <h2 className="font-heading text-foreground mb-4">Prêt à transformer votre cabinet ?</h2>
               <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-                Estimez vos économies en 2 minutes ou échangez directement avec un architecte IA.
+                Estimez vos placements supplémentaires en 2 minutes ou échangez directement avec un spécialiste IA recrutement.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="/#calculator" className="btn-primary">
