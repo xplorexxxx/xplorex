@@ -1,4 +1,4 @@
-import { ArrowDown, FileText, Building2, Wallet, Rocket, TrendingUp, Clock, ShieldCheck } from "lucide-react";
+import { ArrowDown, FileText, Search, Rocket, Users, TrendingUp, Clock, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import AnimatedSection from "./AnimatedSection";
 
@@ -17,9 +17,9 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
   };
 
   const personas = [
-    { id: "ops", label: "Ops / COO", fullLabel: "Je pilote les Ops / COO", icon: Building2 },
-    { id: "finance", label: "Finance / Admin", fullLabel: "Je gère Finance / Admin", icon: Wallet },
-    { id: "saas", label: "SaaS / Tech", fullLabel: "Je scale un SaaS / Tech", icon: Rocket },
+    { id: "sourcing", label: "Sourcing IA", fullLabel: "Automatiser mon sourcing", icon: Search },
+    { id: "bizdev", label: "Business Dev", fullLabel: "Générer des mandats clients", icon: Rocket },
+    { id: "vivier", label: "Intelligence Vivier", fullLabel: "Exploiter ma base candidats", icon: Users },
   ];
 
   return (
@@ -36,21 +36,19 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
             <AnimatedSection delay={0}>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 mb-6 sm:mb-8 rounded-full bg-secondary border border-border text-xs sm:text-sm font-medium text-foreground">
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                <span>Résultat garanti ou 0€ facturé</span>
+                <span>Agence IA spécialisée cabinets de recrutement</span>
               </div>
             </AnimatedSection>
 
             <AnimatedSection delay={100}>
               <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-[3.5rem] font-heading text-foreground mb-4 sm:mb-6 tracking-tight text-balance leading-[1.1]">
-                Agence IA pour entreprises : supprimez la{" "}
-                <span className="text-primary">taxe invisible</span>{" "}
-                sur vos opérations.
+                Vos recruteurs passent <span className="text-primary">70%</span> de leur temps sur des tâches que l'IA fait en 10 minutes.
               </h1>
             </AnimatedSection>
 
             <AnimatedSection delay={200}>
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl mb-6 sm:mb-10 text-balance mx-auto lg:mx-0">
-                On la supprime en 15 jours. Résultat mesuré ou 0€ facturé. Lancez le diagnostic.
+                Sourcing LinkedIn automatisé. Business dev en pilote automatique. Vivier candidats interrogeable en langage naturel. Résultat mesuré ou 0€ facturé.
               </p>
             </AnimatedSection>
 
@@ -96,7 +94,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                   className="btn-primary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
                   style={{ touchAction: "manipulation" }}
                 >
-                  Lancer mon diagnostic gratuit
+                  Estimer mes placements supplémentaires
                   <ArrowDown className="w-4 h-4" />
                 </a>
                 <button
@@ -106,14 +104,14 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                   style={{ touchAction: "manipulation" }}
                 >
                   <FileText className="w-4 h-4" />
-                  Blueprint technique
+                  Réserver un audit gratuit
                 </button>
               </div>
             </AnimatedSection>
 
             <AnimatedSection delay={500}>
               <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-muted-foreground">
-                Diagnostic en 2 minutes · Rapport immédiat · Sans engagement
+                Diagnostic en 2 minutes · Spécial cabinets de recrutement · Sans engagement
               </p>
             </AnimatedSection>
 
@@ -122,15 +120,15 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
                   <TrendingUp className="w-4 h-4 text-success" />
                   <div>
-                    <p className="text-sm font-heading text-foreground">+280%</p>
-                    <p className="text-[10px] text-muted-foreground">ROI moyen clients</p>
+                    <p className="text-sm font-heading text-foreground">×5</p>
+                    <p className="text-[10px] text-muted-foreground">profils sourcés / recruteur</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
                   <Clock className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-sm font-heading text-foreground">15 jours</p>
-                    <p className="text-[10px] text-muted-foreground">1er résultat</p>
+                    <p className="text-[10px] text-muted-foreground">Placements supplémentaires</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
@@ -155,8 +153,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                       <TrendingUp className="w-5 h-5 text-success" />
                     </div>
                     <div>
-                      <p className="text-2xl font-heading text-foreground">+280%</p>
-                      <p className="text-xs text-muted-foreground">ROI moyen clients</p>
+                      <p className="text-2xl font-heading text-foreground">×5</p>
+                      <p className="text-xs text-muted-foreground">profils sourcés par recruteur</p>
                     </div>
                   </div>
 
@@ -166,7 +164,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                     </div>
                     <div>
                       <p className="text-2xl font-heading text-foreground">15 jours</p>
-                      <p className="text-xs text-muted-foreground">Premier résultat mesurable</p>
+                      <p className="text-xs text-muted-foreground">Pour des placements supplémentaires</p>
                     </div>
                   </div>
 
@@ -194,8 +192,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
           <div className="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-border/50">
             <div className="flex justify-center lg:justify-start">
               <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 rounded-2xl bg-success/10 border border-success/20">
-                <span className="text-success font-semibold text-sm sm:text-base">Résultat mesurable en 15 jours</span>
-                <span className="text-muted-foreground text-xs sm:text-sm">ou 0€ facturé — engagement contractuel</span>
+                <span className="text-success font-semibold text-sm sm:text-base">3 placements supplémentaires le premier mois</span>
+                <span className="text-muted-foreground text-xs sm:text-sm">ou vous ne payez rien</span>
               </div>
             </div>
           </div>
