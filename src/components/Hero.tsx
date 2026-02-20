@@ -122,8 +122,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
                   <TrendingUp className="w-4 h-4 text-success" />
                   <div>
-                    <p className="text-sm font-heading text-foreground">+340%</p>
-                    <p className="text-[10px] text-muted-foreground">ROI moyen</p>
+                    <p className="text-sm font-heading text-foreground">+280%</p>
+                    <p className="text-[10px] text-muted-foreground">ROI moyen clients</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
@@ -155,8 +155,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                       <TrendingUp className="w-5 h-5 text-success" />
                     </div>
                     <div>
-                      <p className="text-2xl font-heading text-foreground">+340%</p>
-                      <p className="text-xs text-muted-foreground">ROI moyen mesuré</p>
+                      <p className="text-2xl font-heading text-foreground">+280%</p>
+                      <p className="text-xs text-muted-foreground">ROI moyen clients</p>
                     </div>
                   </div>
 
