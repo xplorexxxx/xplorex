@@ -7,9 +7,10 @@ interface NavbarProps {
 }
 
 const navLinks = [
-  { label: "Comment ça marche", href: "#how-it-works" },
-  { label: "Calculateur", href: "#calculator" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Services", href: "/services", isPage: true },
+  { label: "Comment ça marche", href: "#how-it-works", isPage: false },
+  { label: "Calculateur", href: "#calculator", isPage: false },
+  { label: "FAQ", href: "#faq", isPage: false },
 ];
 
 const Navbar = ({ onBookCallClick }: NavbarProps) => {
@@ -76,7 +77,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               <a
                 key={link.href}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
+                onClick={link.isPage ? undefined : (e) => { e.preventDefault(); scrollToSection(link.href); }}
                 className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
                 style={{ touchAction: "manipulation" }}
               >
@@ -90,6 +91,13 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               style={{ touchAction: "manipulation" }}
             >
               À propos
+            </a>
+            <a
+              href="/contact"
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
+              style={{ touchAction: "manipulation" }}
+            >
+              Contact
             </a>
 
             <button
@@ -127,7 +135,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               <a
                 key={link.href}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
+                onClick={link.isPage ? () => setIsOpen(false) : (e) => { e.preventDefault(); scrollToSection(link.href); }}
                 className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50 block"
                 style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
               >
@@ -137,10 +145,19 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
 
             <a
               href="/about"
+              onClick={() => setIsOpen(false)}
               className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50 block"
               style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
             >
               À propos
+            </a>
+            <a
+              href="/contact"
+              onClick={() => setIsOpen(false)}
+              className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50 block"
+              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
+            >
+              Contact
             </a>
 
             <button
