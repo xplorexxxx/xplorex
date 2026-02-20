@@ -17,10 +17,10 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
   };
 
   const personas = [
-    { id: "sourcing", label: "Sourcing IA", fullLabel: "Automatiser mon sourcing", icon: Search },
-    { id: "bizdev", label: "Business Dev", fullLabel: "Générer des mandats clients", icon: Rocket },
-    { id: "vivier", label: "Intelligence Vivier", fullLabel: "Exploiter ma base candidats", icon: Users },
-  ];
+  { id: "sourcing", label: "Sourcing IA", fullLabel: "Automatiser mon sourcing", icon: Search },
+  { id: "bizdev", label: "Business Dev", fullLabel: "Générer des mandats clients", icon: Rocket },
+  { id: "vivier", label: "Intelligence Vivier", fullLabel: "Exploiter ma base candidats", icon: Users }];
+
 
   return (
     <section className="relative pt-20 pb-10 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-28 overflow-hidden">
@@ -70,17 +70,17 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                       style={{ touchAction: "manipulation" }}
                       className={`
                         inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-medium transition-all duration-200 active:scale-[0.97]
-                        ${isSelected
-                          ? "bg-primary text-primary-foreground border-primary shadow-lg"
-                          : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-secondary"
-                        }
-                      `}
-                    >
+                        ${isSelected ?
+                      "bg-primary text-primary-foreground border-primary shadow-lg" :
+                      "bg-card text-foreground border-border hover:border-primary/50 hover:bg-secondary"}
+                      `
+                      }>
+
                       <Icon className="w-4 h-4" />
                       <span className="hidden sm:inline">{persona.fullLabel}</span>
                       <span className="sm:hidden">{persona.label}</span>
-                    </a>
-                  );
+                    </a>);
+
                 })}
               </div>
             </AnimatedSection>
@@ -90,19 +90,19 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
                 <a
                   href="#calculator"
-                  onClick={(e) => { e.preventDefault(); scrollToCalculator(); }}
+                  onClick={(e) => {e.preventDefault();scrollToCalculator();}}
                   className="btn-primary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
-                  style={{ touchAction: "manipulation" }}
-                >
-                  Estimer mes placements supplémentaires
+                  style={{ touchAction: "manipulation" }}>Estimer avec notre calculateur
+
+
                   <ArrowDown className="w-4 h-4" />
                 </a>
                 <button
                   type="button"
                   onClick={onBlueprintClick}
                   className="btn-secondary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
-                  style={{ touchAction: "manipulation" }}
-                >
+                  style={{ touchAction: "manipulation" }}>
+
                   <FileText className="w-4 h-4" />
                   Réserver un audit offert
                 </button>
@@ -199,8 +199,8 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
           </div>
         </AnimatedSection>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default Hero;
