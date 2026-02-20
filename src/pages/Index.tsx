@@ -77,33 +77,21 @@ const Index = () => {
           <section className="section-solid">
             <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-alt">
             <CaseStudy />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
             <TechnicalSpecs />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-alt">
             <EngineeringStandard />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
             <GuaranteeSection />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-alt">
             <FAQ />
           </section>
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
           <section className="section-solid">
             <FinalCTA onBookCallClick={openBookCallModal} />
           </section>
