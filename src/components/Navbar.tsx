@@ -118,12 +118,11 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
 
       {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div
-          className="fixed inset-0 top-16 bg-background lg:hidden"
-          style={{ zIndex: 50, pointerEvents: "auto" }}
-          onClick={() => setIsOpen(false)}
-        >
-          <div className="flex flex-col p-6 mobile-menu-enter overflow-y-auto max-h-[calc(100vh-4rem)]" onClick={(e) => e.stopPropagation()}>
+         <div
+           className="fixed inset-0 top-16 z-50 bg-background shadow-lg lg:hidden"
+           onClick={() => setIsOpen(false)}
+         >
+           <div className="flex flex-col p-6 mobile-menu-enter overflow-y-auto max-h-[calc(100dvh-4rem)] bg-background" onClick={(e) => e.stopPropagation()}>
             {navLinks.map((link) => (
               <a
                 key={link.href}

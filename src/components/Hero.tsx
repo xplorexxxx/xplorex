@@ -23,7 +23,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
   ];
 
   return (
-    <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-28 overflow-hidden">
+    <section className="relative pt-20 pb-10 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-28 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
       <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl hidden sm:block" />
@@ -41,20 +41,20 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
             </AnimatedSection>
 
             <AnimatedSection delay={100}>
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-[3.5rem] font-heading text-foreground mb-4 sm:mb-6 tracking-tight text-balance leading-[1.1]">
+              <h1 className="text-[1.6rem] sm:text-4xl lg:text-5xl xl:text-[3.5rem] font-heading text-foreground mb-4 sm:mb-6 tracking-tight text-balance leading-[1.15]">
                 Vos recruteurs passent <span className="text-primary">70%</span> de leur temps sur des tâches que l'IA fait en 10 minutes.
               </h1>
             </AnimatedSection>
 
             <AnimatedSection delay={200}>
-              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl mb-6 sm:mb-10 text-balance mx-auto lg:mx-0">
+              <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground max-w-xl mb-5 sm:mb-10 text-balance mx-auto lg:mx-0">
                 Sourcing LinkedIn automatisé. Business dev en pilote automatique. Vivier candidats interrogeable en langage naturel. Résultat mesuré ou 0€ facturé.
               </p>
             </AnimatedSection>
 
             {/* Persona Segment Buttons */}
             <AnimatedSection delay={300}>
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-6 sm:mb-10">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-5 sm:mb-10">
                 {personas.map((persona) => {
                   const Icon = persona.icon;
                   const isSelected = selectedPersona === persona.id;
