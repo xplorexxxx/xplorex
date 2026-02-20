@@ -8,16 +8,18 @@ interface NavbarProps {
 }
 
 const allNavLinks = [
-  { label: "Services", href: "/services", isPage: true, homeOnly: false },
-  { label: "À propos", href: "/about", isPage: true, homeOnly: false },
-  { label: "Calculateur", href: "#calculator", isPage: false, homeOnly: true },
-  { label: "FAQ", href: "#faq", isPage: false, homeOnly: true },
+  { label: "Accueil", href: "/", isPage: true, homeOnly: false, hideOnHome: true },
+  { label: "Calculateur", href: "#calculator", isPage: false, homeOnly: true, hideOnHome: false },
+  { label: "Services", href: "/services", isPage: true, homeOnly: false, hideOnHome: false },
+  { label: "Contact", href: "/contact", isPage: true, homeOnly: false, hideOnHome: false },
+  { label: "FAQ", href: "#faq", isPage: false, homeOnly: true, hideOnHome: false },
+  { label: "À propos", href: "/about", isPage: true, homeOnly: false, hideOnHome: false },
 ];
 
 const Navbar = ({ onBookCallClick }: NavbarProps) => {
   const location = useLocation();
   const isHome = location.pathname === "/";
-  const navLinks = allNavLinks.filter((link) => !link.homeOnly || isHome);
+  const navLinks = allNavLinks.filter((link) => (!link.homeOnly || isHome) && (!link.hideOnHome || !isHome));
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -89,13 +91,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               </a>
             ))}
 
-            <a
-              href="/contact"
-              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
-              style={{ touchAction: "manipulation" }}
-            >
-              Contact
-            </a>
+
 
             <button
               type="button"
@@ -140,14 +136,7 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
               </a>
             ))}
 
-            <a
-              href="/contact"
-              onClick={() => setIsOpen(false)}
-              className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50 block"
-              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
-            >
-              Contact
-            </a>
+
 
             <button
               type="button"
