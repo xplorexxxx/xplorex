@@ -116,6 +116,32 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                 Diagnostic en 2 minutes · Rapport immédiat · Sans engagement
               </p>
             </AnimatedSection>
+
+            <AnimatedSection delay={550}>
+              <div className="flex flex-wrap items-center justify-center lg:hidden gap-3 mt-6">
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
+                  <TrendingUp className="w-4 h-4 text-success" />
+                  <div>
+                    <p className="text-sm font-heading text-foreground">+340%</p>
+                    <p className="text-[10px] text-muted-foreground">ROI moyen</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
+                  <Clock className="w-4 h-4 text-primary" />
+                  <div>
+                    <p className="text-sm font-heading text-foreground">15 jours</p>
+                    <p className="text-[10px] text-muted-foreground">1er résultat</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/50" style={{ boxShadow: "var(--shadow-sm)" }}>
+                  <ShieldCheck className="w-4 h-4 text-primary" />
+                  <div>
+                    <p className="text-sm font-heading text-foreground">0€ risque</p>
+                    <p className="text-[10px] text-muted-foreground">Garanti</p>
+                  </div>
+                </div>
+              </div>
+            </AnimatedSection>
           </div>
 
           {/* Right Visual — 5 cols (desktop only) */}
