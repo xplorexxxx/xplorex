@@ -8,10 +8,11 @@ const Footer = lazy(() => import("@/components/Footer"));
 const BookCallModal = lazy(() => import("@/components/BookCallModal"));
 
 const departments = [
-  "Opérations / COO",
-  "Finance / DAF",
-  "Commercial / SaaS",
-  "Direction Générale",
+  "Fondateur / Associé",
+  "Directeur de cabinet",
+  "Responsable sourcing",
+  "Recruteur senior",
+  "Consultant indépendant",
   "Autre",
 ];
 
@@ -49,10 +50,10 @@ const Contact = () => {
             <AnimatedSection>
               <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Contact</p>
               <h1 className="font-heading text-foreground mb-6">
-                Échangeons sur votre projet IA
+                Parlons de votre cabinet
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Diagnostic gratuit en 2 minutes ou échange stratégique avec un architecte IA.
+                Diagnostic offert de votre stack sourcing ou échange stratégique avec un spécialiste IA recrutement.
               </p>
             </AnimatedSection>
           </div>
@@ -141,7 +142,7 @@ const Contact = () => {
                       value={form.message}
                       onChange={handleChange}
                       className="input-field resize-none"
-                      placeholder="Décrivez brièvement votre besoin..."
+                      placeholder="Décrivez votre cabinet : nombre de recruteurs, secteurs couverts, outils utilisés (ATS, LinkedIn Recruiter, etc.)..."
                     />
                   </div>
 
@@ -159,7 +160,7 @@ const Contact = () => {
                     <Phone className="w-5 h-5 text-primary mb-3" />
                     <h3 className="text-base font-heading text-foreground mb-2">Préférez un échange direct ?</h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Réservez un créneau de 30 min avec un architecte IA pour discuter de votre projet.
+                      Réservez 30 min avec un spécialiste IA recrutement pour auditer votre process de sourcing.
                     </p>
                     <button type="button" onClick={openBookCallModal} className="btn-primary text-sm py-2.5 w-full">
                       Réserver un créneau
