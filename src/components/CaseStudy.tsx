@@ -146,6 +146,84 @@ const CaseStudy = () => {
               </AnimatedSection>
             </div>
           </div>
+
+          <div className="lg:col-span-12 mt-12 lg:mt-16">
+            <AnimatedSection>
+              <h3 className="text-xl sm:text-2xl font-heading text-foreground mb-8">
+                Résultats documentés par secteur
+              </h3>
+            </AnimatedSection>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Case Study Ops / COO */}
+              <AnimatedSection delay={100}>
+                <div className="p-6 rounded-2xl border border-border/50 bg-card h-full" style={{ boxShadow: "var(--shadow-card)" }}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">OPS</span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">Direction des Opérations</p>
+                      <p className="text-xs text-muted-foreground">Groupe industriel · 450 collaborateurs</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    Automatisation du traitement et du routage des commandes fournisseurs. 
+                    L'IA extrait, valide et réconcilie les bons de commande avec les contrats-cadres existants.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="px-3 py-1.5 rounded-lg bg-success/10">
+                      <p className="text-lg font-heading text-success">-65%</p>
+                      <p className="text-[10px] text-muted-foreground">Temps de traitement</p>
+                    </div>
+                    <div className="px-3 py-1.5 rounded-lg bg-primary/10">
+                      <p className="text-lg font-heading text-primary">4,2 ETP</p>
+                      <p className="text-[10px] text-muted-foreground">Réalloués à la stratégie</p>
+                    </div>
+                    <div className="px-3 py-1.5 rounded-lg bg-success/10">
+                      <p className="text-lg font-heading text-success">8 sem.</p>
+                      <p className="text-[10px] text-muted-foreground">Déploiement complet</p>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/60 mt-4">
+                    Méthodologie alignée McKinsey — « 60 à 70% du temps de travail est automatisable par l'IA » (McKinsey, The Economic Potential of Generative AI, 2023)
+                  </p>
+                </div>
+              </AnimatedSection>
+
+              {/* Case Study Finance / DAF */}
+              <AnimatedSection delay={200}>
+                <div className="p-6 rounded-2xl border border-border/50 bg-card h-full" style={{ boxShadow: "var(--shadow-card)" }}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">FIN</span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">Direction Financière</p>
+                      <p className="text-xs text-muted-foreground">Scale-up e-commerce · 80 collaborateurs</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    Déploiement d'un pipeline IA de réconciliation comptable et de détection d'anomalies 
+                    sur les flux de trésorerie. Intégration native avec l'ERP existant.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="px-3 py-1.5 rounded-lg bg-success/10">
+                      <p className="text-lg font-heading text-success">-91%</p>
+                      <p className="text-[10px] text-muted-foreground">Traitement factures</p>
+                    </div>
+                    <div className="px-3 py-1.5 rounded-lg bg-primary/10">
+                      <p className="text-lg font-heading text-primary">500h/mois</p>
+                      <p className="text-[10px] text-muted-foreground">Économisées</p>
+                    </div>
+                    <div className="px-3 py-1.5 rounded-lg bg-success/10">
+                      <p className="text-lg font-heading text-success">+25%</p>
+                      <p className="text-[10px] text-muted-foreground">Productivité FP&A</p>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/60 mt-4">
+                    KPIs alignés sur les benchmarks IBM/SAP et le rapport Deloitte « Directions financières : comment tirer parti de l'IA ? » (2025) — productivité comptable +20 à 30%.
+                  </p>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
         </div>
       </div>
     </section>
