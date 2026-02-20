@@ -42,9 +42,9 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
 
             <AnimatedSection delay={100}>
               <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-[3.5rem] font-heading text-foreground mb-4 sm:mb-6 tracking-tight text-balance leading-[1.1]">
-                Vous payez une{" "}
+                Agence IA pour entreprises : supprimez la{" "}
                 <span className="text-primary">taxe invisible</span>{" "}
-                sur chaque opération.
+                sur vos opérations.
               </h1>
             </AnimatedSection>
 
