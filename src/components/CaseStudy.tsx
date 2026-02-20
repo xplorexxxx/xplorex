@@ -2,10 +2,10 @@ import { TrendingUp, Target, Users, BarChart3, Shield, Lock } from "lucide-react
 import AnimatedSection from "./AnimatedSection";
 
 const kpis = [
-  { icon: TrendingUp, value: "+340%", label: "ROI sur ce projet", color: "text-success" },
-  { icon: Target, value: "87%", label: "Taux de pénétration", color: "text-primary" },
-  { icon: Users, value: "12→3j", label: "Cycle de qualification", color: "text-foreground" },
-  { icon: BarChart3, value: "2,4M€", label: "Pipeline généré", color: "text-success" },
+  { icon: TrendingUp, value: "+65%", label: "Placements supplémentaires", color: "text-success" },
+  { icon: Target, value: "×5", label: "Profils sourcés par recruteur/jour", color: "text-primary" },
+  { icon: Users, value: "12→4j", label: "Time-to-shortlist", color: "text-foreground" },
+  { icon: BarChart3, value: "23%", label: "Taux de réponse (vs 8% avant)", color: "text-success" },
 ];
 
 const CaseStudy = () => {
@@ -19,10 +19,10 @@ const CaseStudy = () => {
               Étude de cas
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-heading text-foreground mb-4 leading-tight">
-              Du Challenge au ROI stratégique
+              D'un sourcing manuel à une machine à placer
             </h2>
             <p className="text-lg text-muted-foreground">
-              Méthodologie "Architectural Deep Dive" — chaque déploiement documenté, chaque résultat auditable.
+              Comment un cabinet de recrutement IT a augmenté ses placements de 65% en 60 jours avec notre infrastructure IA.
             </p>
           </div>
         </AnimatedSection>
@@ -38,12 +38,12 @@ const CaseStudy = () => {
                   <Target className="w-5 h-5 text-navy" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-steel">Éditeur SaaS B2B · Série B · 120 collaborateurs</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-steel">Cabinet de recrutement IT · 8 recruteurs · Paris & Lyon</p>
                 </div>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-heading text-foreground mb-8">
-                Pénétration des comptes CAC 40 sans augmenter les effectifs commerciaux
+                Diviser le time-to-hire par 3 sans recruter un seul sourceur supplémentaire
               </h3>
             </AnimatedSection>
 
@@ -56,8 +56,7 @@ const CaseStudy = () => {
                     <h4 className="text-sm font-bold text-foreground uppercase tracking-wide">Challenge</h4>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Cycle de qualification de 12 jours par compte. SDR saturés sur des tâches manuelles de recherche
-                    et d'enrichissement. Taux de pénétration des comptes stratégiques inférieur à 15%.
+                    8 recruteurs passant 75% de leur temps sur du sourcing LinkedIn manuel. Taux de réponse aux InMails en chute libre (8%). Pipeline clients dépendant de 3 comptes historiques. Vivier de 12 000 candidats inexploité dans un ATS vieillissant.
                   </p>
                 </div>
               </AnimatedSection>
@@ -66,11 +65,10 @@ const CaseStudy = () => {
                 <div className="p-5 rounded-xl border border-border/50 bg-secondary/30">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">02</span>
-                    <h4 className="text-sm font-bold text-foreground uppercase tracking-wide">Solution RAG</h4>
+                    <h4 className="text-sm font-bold text-foreground uppercase tracking-wide">Solution XPLORE X</h4>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Déploiement d'un système RAG propriétaire connecté aux bases de connaissances internes
-                    et aux signaux de marché. Orchestration ABM automatisée avec scoring prédictif.
+                    Déploiement d'un système de sourcing IA (n8n + Claude) connecté à LinkedIn et au vivier existant. Scoring automatique des candidats, messages d'approche hyper-personnalisés, et pipeline business dev automatisé pour générer de nouveaux mandats.
                   </p>
                 </div>
               </AnimatedSection>
@@ -84,8 +82,7 @@ const CaseStudy = () => {
                     <h4 className="text-sm font-bold text-foreground uppercase tracking-wide">Sécurité</h4>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Cloisonnement strict des LLM. Anonymisation des données personnelles avant traitement.
-                    Chiffrement AES-256 au repos, aucune donnée transmise hors UE.
+                    Conformité RGPD native et AI Act. Données candidats hébergées en UE, chiffrement AES-256, aucun scraping agressif. Traçabilité complète de chaque décision algorithmique.
                   </p>
                 </div>
               </AnimatedSection>
@@ -95,17 +92,15 @@ const CaseStudy = () => {
             <AnimatedSection delay={340}>
               <div className="mt-8 p-6 rounded-xl bg-secondary/50 border border-border/50">
                 <blockquote className="italic text-muted-foreground text-base leading-relaxed">
-                  "Nous avons remplacé 4 outils et 2 postes de SDR par une infrastructure d'intelligence
-                  commerciale qui identifie, qualifie et engage nos comptes stratégiques de manière autonome.
-                  Le ROI a été mesurable dès la troisième semaine."
+                  "On a remplacé Waalaxy, 3 licences LinkedIn Recruiter et un tableur Excel par une seule infrastructure. Mes recruteurs sourçent 5 fois plus de profils qualifiés et le taux de réponse a triplé. Le ROI était visible dès le premier mois."
                 </blockquote>
                 <div className="flex items-center gap-3 mt-4">
                   <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center">
                     <Lock className="w-4 h-4 text-navy" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Directeur Commercial</p>
-                    <p className="text-xs text-muted-foreground">Éditeur SaaS B2B · Confidentiel</p>
+                    <p className="text-sm font-semibold text-foreground">Fondateur & Associé</p>
+                    <p className="text-xs text-muted-foreground">Cabinet de recrutement IT · Confidentiel</p>
                   </div>
                 </div>
               </div>
@@ -140,7 +135,7 @@ const CaseStudy = () => {
                 <div className="p-5 rounded-2xl border-2 border-success/20 bg-success/5 text-center">
                   <p className="text-sm font-semibold text-foreground mb-1">Résultat</p>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    ROI mesuré dès la 3ème semaine. 4 outils remplacés par une infrastructure autonome et auditable.
+                    ROI positif dès le premier mois. 3 licences LinkedIn Recruiter économisées. Pipeline clients doublé.
                   </p>
                 </div>
               </AnimatedSection>
