@@ -24,11 +24,10 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
 
           <div className="relative">
             <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
-              Prêt à structurer votre intelligence commerciale ?
+              Prêt à sourcer 5× plus sans recruter ?
             </h2>
             <p className="text-lg text-primary-foreground/80 max-w-xl mx-auto mb-8">
-              Quantifiez vos pertes de valeur en 30 secondes, ou échangez directement 
-              avec un expert pour évaluer votre potentiel d'Account-Based Excellence.
+              Estimez vos placements supplémentaires en 2 minutes, ou réservez un audit gratuit de votre process de sourcing avec un spécialiste IA recrutement.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -38,7 +37,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
                 className="btn-primary text-base py-3.5 px-8"
                 style={{ touchAction: "manipulation" }}
               >
-                Lancer le diagnostic
+                Estimer mes placements
                 <ArrowRight className="w-4 h-4" />
               </a>
               <button
@@ -47,7 +46,7 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 font-semibold text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-xl border border-primary-foreground/20 transition-all duration-200"
                 style={{ touchAction: "manipulation" }}
               >
-                Réserver un échange stratégique
+                Réserver mon audit sourcing gratuit
               </button>
             </div>
           </div>
