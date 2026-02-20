@@ -1,4 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from "react";
+import { useScrollTracking } from "@/hooks/useScrollTracking";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechStack from "@/components/TechStack";
@@ -53,19 +54,28 @@ const Index = () => {
   const openBookCallModal = useCallback(() => setIsBookCallModalOpen(true), []);
   const closeBookCallModal = useCallback(() => setIsBookCallModalOpen(false), []);
 
+  useScrollTracking({
+    sectionIds: [
+      'hero', 'tech-stack', 'how-it-works', 'calculator',
+      'conversion', 'case-study', 'technical-specs',
+      'engineering-standard', 'guarantee', 'faq', 'final-cta'
+    ],
+    threshold: 0.3
+  });
+
   return (
     <div className="overflow-x-hidden w-full max-w-[100vw] min-h-screen-dynamic">
       <Navbar onBookCallClick={openBookCallModal} />
       
       <main className="overflow-x-hidden w-full gpu-accelerated">
         {/* Hero - untouched */}
-        <section className="section-solid">
+        <section id="hero" className="section-solid">
           <Hero onBlueprintClick={openBookCallModal} />
         </section>
-        <section className="section-alt">
+        <section id="tech-stack" className="section-alt">
           <TechStack />
         </section>
-        <section className="section-solid">
+        <section id="how-it-works" className="section-solid">
           <HowItWorks />
         </section>
         <section className="section-alt" id="calculator">
@@ -74,25 +84,25 @@ const Index = () => {
         
         {/* Below-fold */}
         <Suspense fallback={<SectionFallback />}>
-          <section className="section-solid">
+          <section id="conversion" className="section-solid">
             <ConversionSection results={calculatorResults} inputs={calculatorInputs} onBookCallClick={openBookCallModal} />
           </section>
-          <section className="section-alt">
+          <section id="case-study" className="section-alt">
             <CaseStudy />
           </section>
-          <section className="section-solid">
+          <section id="technical-specs" className="section-solid">
             <TechnicalSpecs />
           </section>
-          <section className="section-alt">
+          <section id="engineering-standard" className="section-alt">
             <EngineeringStandard />
           </section>
-          <section className="section-solid">
+          <section id="guarantee" className="section-solid">
             <GuaranteeSection />
           </section>
-          <section className="section-alt">
+          <section id="faq" className="section-alt">
             <FAQ />
           </section>
-          <section className="section-solid">
+          <section id="final-cta" className="section-solid">
             <FinalCTA onBookCallClick={openBookCallModal} />
           </section>
         </Suspense>
