@@ -171,7 +171,7 @@ const Contact = () => {
                     <Calculator className="w-5 h-5 text-primary mb-3" />
                     <h3 className="text-base font-heading text-foreground mb-2">Diagnostic en 2 minutes</h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Estimez votre potentiel d'économie avec notre calculateur ROI gratuit.
+                      Estimez votre potentiel d'économie avec notre calculateur ROI offert.
                     </p>
                     <a href="/#calculator" className="btn-secondary text-sm py-2.5 w-full text-center">
                       Calculer mon ROI

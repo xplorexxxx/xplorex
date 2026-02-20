@@ -125,7 +125,7 @@ const About = () => {
                   Estimer mes placements
                 </a>
                 <button type="button" onClick={openBookCallModal} className="btn-secondary">
-                  Réserver un audit gratuit
+                  Réserver un audit offert
                 </button>
               </div>
             </AnimatedSection>

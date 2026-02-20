@@ -31,7 +31,7 @@ const Terms = () => {
             <section className="space-y-3">
               <h2 className="text-xl font-semibold text-foreground">2. Description du service</h2>
               <p>
-                Le Calculateur ROI est un outil gratuit conçu pour aider les entreprises à estimer le temps et le coût perdus sur des tâches répétitives. Les calculs fournis sont des estimations basées sur les données que vous fournissez et doivent être utilisés à titre informatif uniquement.
+                Le Calculateur ROI est un outil offert conçu pour aider les entreprises à estimer le temps et le coût perdus sur des tâches répétitives. Les calculs fournis sont des estimations basées sur les données que vous fournissez et doivent être utilisés à titre informatif uniquement.
               </p>
             </section>
 
