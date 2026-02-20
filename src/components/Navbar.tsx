@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
 
@@ -6,13 +7,16 @@ interface NavbarProps {
   onBookCallClick: () => void;
 }
 
-const navLinks = [
-  { label: "Services", href: "/services", isPage: true },
-  { label: "Calculateur", href: "#calculator", isPage: false },
-  { label: "FAQ", href: "#faq", isPage: false },
+const allNavLinks = [
+  { label: "Services", href: "/services", isPage: true, homeOnly: false },
+  { label: "Calculateur", href: "#calculator", isPage: false, homeOnly: true },
+  { label: "FAQ", href: "#faq", isPage: false, homeOnly: true },
 ];
 
 const Navbar = ({ onBookCallClick }: NavbarProps) => {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const navLinks = allNavLinks.filter((link) => !link.homeOnly || isHome);
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
