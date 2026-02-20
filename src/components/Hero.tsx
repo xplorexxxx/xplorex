@@ -18,7 +18,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
 
   const personas = [
   { id: "sourcing", label: "Sourcing IA", fullLabel: "Automatiser mon sourcing", icon: Search },
-  { id: "bizdev", label: "Business Dev", fullLabel: "Générer des mandats clients", icon: Rocket },
+  { id: "bizdev", label: "Business Dev", fullLabel: "Générer des missions clients", icon: Rocket },
   { id: "vivier", label: "Intelligence Vivier", fullLabel: "Exploiter ma base candidats", icon: Users }];
 
 
