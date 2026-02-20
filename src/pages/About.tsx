@@ -1,5 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from "react";
-import { Shield, Target, Users, Award } from "lucide-react";
+import { Shield, Target, Users, Award, Linkedin } from "lucide-react";
+import raphaelPhoto from "@/assets/raphael-genin.jpeg";
 import Navbar from "@/components/Navbar";
 import AnimatedSection from "@/components/AnimatedSection";
 
@@ -98,14 +99,16 @@ const About = () => {
             <div className="flex justify-center">
               <AnimatedSection delay={100}>
                 <div className="p-6 rounded-2xl bg-card border border-border/50 text-center max-w-sm" style={{ boxShadow: "var(--shadow-card)" }}>
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-lg font-heading text-primary">RG</span>
-                  </div>
+                  <img src={raphaelPhoto} alt="Raphaël Genin, Fondateur de XPLORE X" className="w-20 h-20 rounded-full object-cover mx-auto mb-4" />
                   <h3 className="text-base font-heading text-foreground mb-1">Raphaël Genin</h3>
                   <p className="text-sm text-primary font-medium mb-3">Fondateur & CEO</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     Spécialiste en automatisation IA et workflows n8n. Construit des systèmes de sourcing et de business dev automatisés pour les cabinets de recrutement. Passionné par l'intersection entre technologie et relations humaines.
                   </p>
+                  <a href="https://www.linkedin.com/in/raphael-genin-610791291/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium">
+                    <Linkedin className="w-4 h-4" />
+                    LinkedIn
+                  </a>
                 </div>
               </AnimatedSection>
             </div>
