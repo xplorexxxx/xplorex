@@ -162,14 +162,6 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* GPU acceleration for smooth scrolling */
-  main,
-  section {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
 
   /* Prevent images/SVGs from breaking layout */
   img,
@@ -404,43 +396,6 @@
     left: 100%;
   }
 
-  /* Data particle background */
-  .data-particles {
-    position: relative;
-  }
-
-  .data-particles::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      radial-gradient(1px 1px at 20% 30%, hsl(216 94% 55% / 0.15), transparent),
-      radial-gradient(1px 1px at 40% 70%, hsl(216 94% 55% / 0.1), transparent),
-      radial-gradient(1px 1px at 60% 40%, hsl(162 72% 41% / 0.1), transparent),
-      radial-gradient(1px 1px at 80% 80%, hsl(216 94% 55% / 0.08), transparent);
-    animation: dataFloat 8s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Pipeline animation for RAG visualization */
-  .pipeline-node {
-    @apply relative;
-  }
-
-  .pipeline-connector {
-    @apply relative;
-  }
-
-  .pipeline-connector::after {
-    content: '';
-    @apply absolute left-6 top-0 bottom-0 w-px;
-    background: linear-gradient(180deg, hsl(var(--primary) / 0.3) 0%, hsl(var(--primary) / 0.1) 100%);
-  }
-
   .pipeline-dot {
     @apply absolute w-2 h-2 rounded-full bg-primary;
     left: calc(1.5rem - 4px);
@@ -507,17 +462,6 @@
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  @keyframes dataFloat {
-    0%, 100% {
-      transform: translateY(0);
-      opacity: 0.5;
-    }
-    50% {
-      transform: translateY(-8px);
-      opacity: 1;
     }
   }
 
