@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "Comment garantissez-vous la conformité RGPD de vos solutions ?",
-    answer: "Chaque flux est conçu avec la conformité RGPD comme prérequis, pas comme option. Consentement tracé, registre de traitement intégré, droit à l'oubli automatisé. Nos architectures respectent les directives ePrivacy et CNIL. Nous fournissons une documentation complète de conformité exploitable par votre DPO.",
+    question: "Nos consultants devront-ils changer d'ATS ou de méthodes de travail ?",
+    answer: "Absolument pas. L'avantage de notre infrastructure (basée sur n8n) est qu'elle s'intègre silencieusement à votre écosystème existant. Nos agents IA travaillent en arrière-plan pour scrapper LinkedIn, enrichir les données, et pousser les profils ultra-qualifiés directement dans votre ATS actuel. Vos recruteurs ne changent pas d'outil, ils reçoivent simplement de meilleurs candidats, plus vite.",
   },
   {
-    question: "Où sont hébergées et traitées nos données ?",
-    answer: "Exclusivement dans l'Union Européenne. Nous utilisons des infrastructures souveraines sans aucun transfert vers des juridictions non-adéquates. Vos données ne sont jamais utilisées pour entraîner des modèles tiers. Export complet disponible sur demande, conformément au principe de portabilité RGPD.",
+    question: "Comment garantissez-vous la conformité RGPD des données candidats ?",
+    answer: "C'est notre priorité absolue. Contrairement aux outils SaaS américains soumis au CLOUD Act, nos solutions d'automatisation et de matching garantissent une souveraineté totale de vos données. Nous sommes 100% alignés avec l'EU AI Act de 2026. Les données de vos candidats et de vos clients ne servent jamais à entraîner des modèles publics.",
   },
   {
-    question: "Qu'est-ce que l'Account-Based Excellence ?",
-    answer: "C'est l'évolution de l'ABM traditionnel, augmenté par l'intelligence artificielle souveraine. Au lieu de cibler des listes statiques, nos systèmes identifient dynamiquement les signaux d'intention, qualifient les comptes en temps réel et personnalisent l'engagement à l'échelle — avec une traçabilité complète de chaque interaction.",
+    question: "Comment réactivez-vous notre « vivier dormant » ?",
+    answer: "La recherche booléenne classique par mots-clés est obsolète. Nous connectons votre ATS à une base vectorielle (RAG). Quand vous avez une nouvelle fiche de poste, notre IA analyse sémantiquement vos milliers de CV archivés pour trouver les candidats qui ont les bonnes compétences, même si le mot-clé exact n'est pas dans le CV. Vous divisez par deux vos coûts de sourcing externe.",
   },
   {
-    question: "Comment mesurez-vous le ROI prédictif ?",
-    answer: "Le ROI prédictif combine des données historiques, des signaux d'engagement et des modèles de scoring propriétaires pour estimer le retour sur investissement de chaque action commerciale avant qu'elle ne soit exécutée. Ce n'est pas de la projection — c'est de la modélisation prédictive basée sur vos données réelles, auditable par votre DAF.",
+    question: "Pourquoi choisir le sur-mesure plutôt qu'un logiciel SaaS de recrutement ?",
+    answer: "Les SaaS RH 'sur étagère' imposent leurs processus à votre cabinet et facturent souvent à la licence ou au volume. En construisant votre propre moteur d'automatisation, vous évitez le 'vendor lock-in', vous déployez des workflows uniques à votre cabinet, et vous traitez des volumes massifs (scraping de milliers de profils) sans que vos coûts d'infrastructure n'explosent.",
   },
   {
-    question: "Nos équipes doivent-elles changer leurs outils ?",
-    answer: "Non. Nous nous intégrons à votre stack existant (CRM, outils de communication, ERP). Notre infrastructure agit comme une couche d'intelligence qui augmente vos outils actuels sans les remplacer. La transition est transparente pour vos équipes — elles gardent leurs habitudes, avec des capacités décuplées.",
+    question: "Concrètement, comment mesurez-vous le ROI de vos systèmes ?",
+    answer: "Nous pilotons notre succès sur 3 KPIs métiers : la réduction de votre Time-to-fill (souvent divisé par deux), l'augmentation du temps de closing (nous libérons en moyenne 10 à 15h de sourcing manuel par semaine et par consultant), et la réduction de vos coûts d'acquisition candidats via les jobboards. Le ROI moyen constaté dépasse les 700%.",
   },
   {
-    question: "Quel est le modèle de gouvernance IA que vous appliquez ?",
-    answer: "Chaque modèle IA déployé est versionné, documenté et auditable. Nous monitorons les biais potentiels, assurons l'explicabilité des décisions et fournissons des logs d'audit en temps réel. Notre politique de gouvernance est formalisée et disponible sur demande pour vos équipes compliance et juridique.",
+    question: "Où sont hébergées nos données et nos bases de CV ?",
+    answer: "L'intégralité de nos solutions et de vos workflows automatisés est hébergée sur des serveurs souverains situés en Europe (comme OVHcloud ou Scaleway). Vos données de recrutement ne quittent jamais le territoire européen, garantissant une confidentialité totale pour vos clients et vos candidats.",
   },
 ];
 
@@ -44,7 +44,7 @@ const FAQ = () => {
             Questions de dirigeants, réponses d'experts
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Les questions que posent les Directeurs Commerciaux, CTO et DPO avant de s'engager.
+            Les questions que posent nos de cabinets de recrutement
           </p>
         </div>
 
