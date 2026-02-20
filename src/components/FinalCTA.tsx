@@ -32,15 +32,15 @@ const FinalCTA = ({ onBookCallClick }: FinalCTAProps) => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button 
-                type="button"
-                onClick={scrollToCalculator} 
+              <a 
+                href="#calculator"
+                onClick={(e) => { e.preventDefault(); scrollToCalculator(); }}
                 className="btn-primary text-base py-3.5 px-8"
                 style={{ touchAction: "manipulation" }}
               >
                 Lancer le diagnostic
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </a>
               <button
                 type="button"
                 onClick={onBookCallClick}

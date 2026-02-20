@@ -61,10 +61,11 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                   const Icon = persona.icon;
                   const isSelected = selectedPersona === persona.id;
                   return (
-                    <button
-                      type="button"
+                    <a
+                      href="#calculator"
                       key={persona.id}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
                         setSelectedPersona(persona.id);
                         scrollToCalculator();
                       }}
@@ -80,7 +81,7 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
                       <Icon className="w-4 h-4" />
                       <span className="hidden sm:inline">{persona.fullLabel}</span>
                       <span className="sm:hidden">{persona.label}</span>
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -89,15 +90,15 @@ const Hero = ({ onBlueprintClick }: HeroProps) => {
             {/* Dual CTA */}
             <AnimatedSection delay={400}>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
-                <button
-                  type="button"
-                  onClick={scrollToCalculator}
+                <a
+                  href="#calculator"
+                  onClick={(e) => { e.preventDefault(); scrollToCalculator(); }}
                   className="btn-primary text-base py-4 px-6 sm:px-8 w-full sm:w-auto"
                   style={{ touchAction: "manipulation" }}
                 >
                   Lancer mon diagnostic gratuit
                   <ArrowDown className="w-4 h-4" />
-                </button>
+                </a>
                 <button
                   type="button"
                   onClick={onBlueprintClick}

@@ -73,15 +73,15 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <button
+              <a
                 key={link.href}
-                type="button"
-                onClick={() => scrollToSection(link.href)}
+                href={link.href}
+                onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
                 className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
                 style={{ touchAction: "manipulation" }}
               >
                 {link.label}
-              </button>
+              </a>
             ))}
 
             <a
@@ -124,15 +124,15 @@ const Navbar = ({ onBookCallClick }: NavbarProps) => {
         >
           <div className="flex flex-col p-6 mobile-menu-enter overflow-y-auto max-h-[calc(100vh-4rem)]" onClick={(e) => e.stopPropagation()}>
             {navLinks.map((link) => (
-              <button
-                type="button"
+              <a
                 key={link.href}
-                onClick={() => scrollToSection(link.href)}
-                className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50"
+                href={link.href}
+                onClick={(e) => { e.preventDefault(); scrollToSection(link.href); }}
+                className="py-4 text-lg font-medium text-foreground text-left border-b border-border/50 block"
                 style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
               >
                 {link.label}
-              </button>
+              </a>
             ))}
 
             <a
