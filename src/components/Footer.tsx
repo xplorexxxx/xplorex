@@ -66,6 +66,11 @@ const Footer = () => {
                   FAQ
                 </a>
               </li>
+              <li>
+                <a href="https://sourcy-tools-ai.lovable.app" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  Outil gratuit
+                </a>
+              </li>
             </ul>
           </div>
 
