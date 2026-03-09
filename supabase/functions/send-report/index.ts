@@ -18,7 +18,7 @@ const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
 const BREVO_SENDER_EMAIL = "contact@xplorex.io";
 const BREVO_SENDER_NAME = "ROI Leak Calculator";
 const RECIPIENT_EMAIL = "contact@xplorex.io";
-const ICLOSED_BOOKING_LINK = "https://app.iclosed.io/e/raphaelgenin/audit-offert-30-minutes";
+const ICLOSED_BOOKING_LINK = "https://cal.eu/raphael-genin-ig1gfm/30min";
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour

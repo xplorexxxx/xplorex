@@ -6,32 +6,17 @@ interface BookCallModalProps {
   onClose: () => void;
 }
 
-const ICLOSED_SCRIPT_SRC = "https://app.iclosed.io/assets/widget.js";
-const ICLOSED_WIDGET_URL = "https://app.iclosed.io/e/raphaelgenin/audit-offert-30-minutes";
+const CAL_BOOKING_URL = "https://cal.eu/raphael-genin-ig1gfm/30min";
 
 const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
-  // Load iClosed script once
-  useEffect(() => {
-    const existingScript = document.querySelector(`script[src="${ICLOSED_SCRIPT_SRC}"]`);
-    if (!existingScript) {
-      const script = document.createElement("script");
-      script.src = ICLOSED_SCRIPT_SRC;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
   // Focus trap and ESC key handling
   useEffect(() => {
     if (!isOpen) return;
 
-    // Store the currently focused element
     previousActiveElement.current = document.activeElement as HTMLElement;
-
-    // Focus the modal
     modalRef.current?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,7 +25,6 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
         return;
       }
 
-      // Focus trap
       if (e.key === "Tab" && modalRef.current) {
         const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -59,14 +43,11 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
-    // Prevent body scroll when modal is open
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
-      // Restore focus to previous element
       previousActiveElement.current?.focus();
     };
   }, [isOpen, onClose]);
@@ -112,22 +93,19 @@ const BookCallModal = ({ isOpen, onClose }: BookCallModalProps) => {
           </p>
         </div>
 
-        {/* iClosed Widget - No wrapper, direct placement */}
-        <div
-          className="iclosed-widget"
-          data-url={ICLOSED_WIDGET_URL}
-          title="🎁 Audit offert — 30 minutes"
-          style={{
-            width: "100%",
-            height: "620px",
-            background: "transparent",
-            border: "none",
-            boxShadow: "none",
-            borderRadius: 0,
-            padding: 0,
-            margin: 0,
-          }}
-        />
+        {/* Cal.eu Embed */}
+        <div className="p-6">
+          <iframe
+            src={CAL_BOOKING_URL}
+            title="🎁 Audit offert — 30 minutes"
+            style={{
+              width: "100%",
+              height: "620px",
+              border: "none",
+              borderRadius: "8px",
+            }}
+          />
+        </div>
       </div>
     </div>
   );
